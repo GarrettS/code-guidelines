@@ -1,7 +1,6 @@
 # Code Guidelines
 
-Canonical source for a generalized vanilla-JS rich internet application doctrine. No frameworks, no build tools, no abstraction for abstraction's sake.
-
+Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No frameworks, no build tools. Maximum readability and performance.
 ## What's Here
 
 - **`code-guidelines.md`** — Operational rules, patterns, defaults, and constraints. What the code must look like.
