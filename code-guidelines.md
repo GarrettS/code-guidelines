@@ -19,6 +19,27 @@ These principles govern judgment calls. They are not suggestions.
 - When the failure affects the user's task or understanding, that outcome must be **user-visible**: a message, a retry option, a fallback, or a graceful degradation.
 - When a feature is optional and the app functions without it, **intentional degradation** is acceptable — but it must be a deliberate design decision, not an accident. Comment the code stating what is degraded and why.
 
+**User-initiated vs. background operations.** The visibility requirement applies to operations the user triggered or whose outcome the user expects. When the app performs a background enhancement — opportunistic state persistence, prefetching, analytics — the user did not ask for it and does not know it exists. If a background operation fails, alerting the user that something they never requested has broken is noise, not transparency. Silent degradation is the correct response: the feature that depends on the enhancement works without it, and the failure is invisible.
+
+The distinction is intent:
+- *User-initiated* — the user clicked Save, submitted a form, requested data. Failure must be visible.
+- *Background enhancement* — the app opportunistically persists state, preloads data, or caches a result to improve a future interaction. Failure is silent. Comment the code stating what is degraded and why.
+
+```javascript
+function trySave(progress) {
+  try {
+    localStorage.setItem(STORAGE_KEY,
+      JSON.stringify(progress));
+  } catch (e) {
+    // Background save — not user-initiated, no alert.
+    // Quiz functions without persistence; user loses
+    // streak data only.
+  }
+}
+```
+
+**Comment the empty catch.** An empty or suppressing `catch` block looks like a mistake — a reader or linter will assume the error was swallowed accidentally. A comment in the body states that the suppression is deliberate and explains what degrades. Without the comment, the next developer adds error handling that alerts the user about a background failure they never needed to see. Use a specific name for the error parameter when the error type can be determined.
+
 Three failure modes violate this:
 
 1. **Unhandled throw.** An exception propagates up the stack with no `catch` that presents a user-visible response. The app enters an undefined state. A helper that checks `response.ok` and throws has not handled the failure — it has relocated it. The caller still crashes if it does not catch, and `console.error` in a `catch` block is not a user-visible response.
@@ -96,6 +117,28 @@ Use progressive enhancement sparingly, and generally avoid polyfills. Degrade gr
 
 When code enumerates project assets — precache manifests, build tool file lists, resource loaders — each entry must be individually justified by an app code reference. Dev tools and documentation are not app code; a reference from a dev tool does not justify inclusion in an asset list. Never glob-include a directory. An asset list is a contract: every entry is used by the running app, every app-used asset is listed. When files are added or removed, update asset lists in the same commit.
 
+### Design Tokens
+
+**Repeated values are named once.** When a CSS value — color, duration, shadow, spacing step, font stack — appears in more than one rule, define it as a custom property on `:root`. Reference the token everywhere; never hardcode the raw value outside `:root`.
+
+This is the CSS form of "no magic numbers." A hardcoded `0.12s` in twelve files is twelve places to update and twelve chances to drift. A token `--dur-fast: 120ms` is one.
+
+**Name tokens by role, not by value.** Use a tiered scale that communicates intent: `--dur-fast` / `--dur-normal`, `--box-shadow-sm` / `--box-shadow-md`. The name describes where the token sits on a severity or size axis. The concrete value can change without renaming, and a reader understands the intent without inspecting the value.
+
+❌ Named by value — the name becomes a lie when the value changes:
+```css
+--shadow-2px: 0 2px 6px rgba(0, 0, 0, 0.15);
+--duration-120: 120ms;
+```
+
+✅ Named by role — stable across value changes:
+```css
+--box-shadow-sm: 0 0.05rem 0.15rem rgba(0, 0, 0, 0.06);
+--dur-fast: 120ms;
+```
+
+**Dark mode is a token concern.** Define both light and dark values for every token in the same file — light on `:root`, dark in `@media (prefers-color-scheme: dark)`. Components consume tokens; they never need their own dark-mode media query. If a component needs a dark-mode override, a token is missing.
+
 ---
 
 ## Patterns
@@ -160,6 +203,7 @@ When a data record and a DOM element represent the same entity, give them the sa
 - **One key across all layers**: the same string appears in JSON keys, element `id` attributes, SVG element `id` attributes, and JS lookups. No translation between layers.
 - **Access pattern (getById)**: event delegation derives the key from the target element's `id`, then addresses both data (`map[id]`) and DOM (`getElementById(id)`) directly. When construction is expensive, use create-on-first-access: `pool[id] || (pool[id] = create(id))`.
 - **Antipattern**: `.find(item => item.id === id)`, `querySelector('[data-id="' + id + '"]')` — linear scans for a known key.
+- **ID or class, not both.** When an element is a singleton addressed by `getElementById`, do not also give it a class that serves the same selector role. An `id` already uniquely selects the element in both CSS and JS. A class that duplicates it is a second name for the same thing — two selectors to maintain, two names a reader must reconcile.
 
 ### Ancestor Class for Batch Styles
 
@@ -307,6 +351,33 @@ Semantic and behavioral rules. Where these overlap with the baseline authorities
 - System font stacks by default. No CDN fonts unless the project spec requires a brand typeface — and if it does, self-host; do not load from third-party CDNs at runtime. Scalable font sizes using `clamp()` — define a font scale as custom properties on `:root` and use those for all `font-size` declarations. No fixed `px` or bare `rem` font sizes in rules.
 - Mobile-first. Base styles target small screens; widen with `min-width` media queries. Images: `max-width: 100%; height: auto`. Overlay positioning uses percentages. No layout element should require horizontal scrolling at the project's minimum target viewport width (typically 320px).
 - Light/dark theme via `prefers-color-scheme`. Unless otherwise stated by the user, provide both. Define the primary palette on `:root`, the alternate in the media query. No manual toggle unless the project spec requires one.
+- **Unit conventions.** `px` for borders — sub-pixel borders render poorly in fractional units. `rem` for padding, margin, gap, border-radius, and box-shadow — these scale with the root font-size and stay proportional to the containers they belong to. `clamp()` custom properties for font sizes (already stated above). Do not mix: a `rem`-padded, `rem`-radiused card with a `px` shadow is a unit mismatch that scales unevenly.
+- **Transition consolidation.** When multiple properties in a `transition` declaration share the same duration and timing function, use `all` instead of enumerating each property. Listing three properties with identical timings restates the same value three times.
+
+  ❌ Same duration repeated per property:
+  ```css
+  transition: border-color var(--dur-fast),
+    background var(--dur-fast),
+    color var(--dur-fast);
+  ```
+
+  ✅ Consolidated:
+  ```css
+  transition: all var(--dur-fast);
+  ```
+
+  Use individual properties only when they need *different* durations or timing functions.
+- **Defensive selectors.** Do not use positional pseudo-classes (`:last-child`, `:first-of-type`, `:nth-last-child`) on containers where JavaScript adds or removes children. The selector breaks silently when the child count changes. Pin to a known structural position with `:nth-child(n)`, or use a class.
+
+  ❌ Breaks when JS appends a sibling:
+  ```css
+  .card > span:last-child { color: var(--text-dim); }
+  ```
+
+  ✅ Stable regardless of dynamic children:
+  ```css
+  .card > span:nth-child(2) { color: var(--text-dim); }
+  ```
 
 ### JavaScript
 
@@ -404,6 +475,7 @@ Comments are a failure of the code to explain itself. When one is necessary, it 
 - Avoid comments likely to become obsolete. A comment that drifts from the code it describes is worse than no comment.
 - No decorative banner or landmark comments (`═══`, `───`, `****`, `/* ── Section ── */`). Use code structure — function names, module boundaries, blank lines — to communicate organization.
 - A comment *is* warranted when code intentionally violates a project convention. State the violation, why it exists, and how it is handled instead. Without this, a future reader will "fix" the code back to the convention and break the design.
+- A comment *is* warranted in a `catch` block that intentionally suppresses an error. State what operation failed, why the failure is acceptable, and what the user loses. An empty `catch` body without a comment is indistinguishable from a bug.
 - Remove dead comments. Commented-out code, obsolete TODOs, and notes that no longer apply are clutter. They mislead readers and accumulate. If the code is gone, the comment goes with it. Version control preserves history — the comment does not need to.
 
 ---
