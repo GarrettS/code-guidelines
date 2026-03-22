@@ -16,7 +16,7 @@ Project-specific decisions — directory structure, asset strategy, content auth
 
 These guidelines are designed for AI-assisted development where a human drives and the AI proposes. The workflow resembles XP-style pairing — the human reviews and edits every line the AI produces. The guidelines constrain the AI's output and give the human a shared vocabulary for directing corrections.
 
-The guidelines are honed iteratively. When the AI produces an anti-pattern — a silent failure, a magic number, a speculative DOM cache — the fix is not just correcting the code. It is tightening the rule so the pattern does not recur. Each rule in the doctrine traces back to a specific failure observed during development. The commit history tells this story.
+Hone the guidelines iteratively. When the AI produces an anti-pattern — a silent failure, a magic number, a speculative DOM cache — do not just correct the code. Tighten the rule so the pattern does not recur. Each rule in the doctrine traces back to a specific failure observed during development.
 
 ## Upstream / Downstream
 
