@@ -12,6 +12,12 @@ Copy `code-guidelines.md` and `code-philosophy.md` into your project root. Keep 
 
 Project-specific decisions — directory structure, asset strategy, content authority, breakpoints, theming — belong in a **project overlay** file (e.g. `project.md`, `CLAUDE.md`, or a PRD), not in a fork of the doctrine. When an overlay overrides a doctrine default, it must state which rule is overridden and why.
 
+## Workflow Strategy
+
+These guidelines are designed for AI-assisted development where a human drives and the AI proposes. The workflow resembles XP-style pairing — the human reviews and edits every line the AI produces. The guidelines constrain the AI's output and give the human a shared vocabulary for directing corrections.
+
+The guidelines are honed iteratively. When the AI produces an anti-pattern — a silent failure, a magic number, a speculative DOM cache — the fix is not just correcting the code. It is tightening the rule so the pattern does not recur. Each rule in the doctrine traces back to a specific failure observed during development. The commit history tells this story.
+
 ## Upstream / Downstream
 
 - **Generalized improvements** to principles, patterns, or rules should be upstreamed back to this repo so all projects benefit.
