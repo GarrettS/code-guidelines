@@ -14,7 +14,7 @@ Project-specific decisions — directory structure, asset strategy, content auth
 
 ## Workflow Strategy
 
-These guidelines are designed for AI-assisted development where a human drives and the AI proposes. The workflow resembles XP-style pairing — the human reviews and edits every line the AI produces. The guidelines constrain the AI's output and give the human a shared vocabulary for directing corrections.
+These guidelines are designed for AI-assisted development where a human drives and the AI proposes. The workflow resembles XP-style pairing — the human reviews and edits every line the AI produces. The guidelines constrain the AI's output and give the human a shared vocabulary for directing corrections. Keep auto-approve off — every file edit, shell command, and commit should require explicit approval. Auto-approve defeats the review loop that makes the pairing work.
 
 Hone the guidelines iteratively. When the AI produces an anti-pattern — a silent failure, a magic number, a speculative DOM cache — do not just correct the code. Tighten the rule so the pattern does not recur. Each rule in the doctrine traces back to a specific failure observed during development.
 
