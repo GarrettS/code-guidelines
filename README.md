@@ -28,4 +28,4 @@ Projects with the `.doctrine` submodule get these automatically. Projects withou
 
 ## Pre-commit Checks
 
-Projects may adopt a repo-local pre-commit script to enforce mechanical doctrine checks (inline event handlers, hardcoded colors, junk-drawer filenames, loose equality, long lines, etc.). See the [PRI study tool](https://github.com/GarrettS/pelvis) `bin/pre-commit-check.sh` for an example. Strip it to generalized checks; leave asset-integrity and project-layout checks to the project overlay.
+`bin/pre-commit-check.sh` enforces mechanical doctrine checks: inline event handlers, hardcoded colors, junk-drawer filenames, loose equality, long lines, etc. It covers generalized checks only — project-specific checks (asset integrity, service worker manifests, PRD references) belong in the project's own script.
