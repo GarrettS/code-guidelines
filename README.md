@@ -1,6 +1,6 @@
 # Code Guidelines
 
-Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No frameworks, no build tools. Maximum readability and performance.
+Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No frameworks or build tools required. Maximum readability and performance.
 ## What's Here
 
 - **`code-guidelines.md`** — Governing standards: principles, patterns, language rules, formatting.
@@ -10,15 +10,25 @@ Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No framewo
 
 Two paths, depending on how far you want to go.
 
-**Use a skill** to get doctrine guidance in an AI coding session without adopting the full submodule. Copy the skill folder from `.claude/skills/` in this repo into your project's `.claude/skills/` directory, then invoke it in Claude Code:
+### Install the Plugin
 
-- `/doctrine` — Loads the CG as governing constraints for the session. Good for trying the doctrine out, or for repos you don't own.
-- `/doctrine-review` — Evaluates code you paste or point to against the doctrine. Shows vanilla equivalents for framework code. Good for learning or comparing approaches.
-- `/doctrine-check` — Audits your current diff against doctrine patterns. Good for pre-commit review.
+One command in Claude Code:
+
+    /plugin install doctrine@GarrettS/code-guidelines
+
+This gives you five skills, invoked at the Claude Code prompt:
+
+- `/doctrine:doctrine` — Loads the CG as governing constraints for the session. Good for trying the doctrine out, or for repos you don't own.
+- `/doctrine:doctrine-review` — Evaluates code you paste or point to against the doctrine. Shows vanilla equivalents for framework code.
+- `/doctrine:doctrine-check` — Audits your current diff against doctrine patterns.
+- `/doctrine:doctrine-apply` — Interactive refactoring. Walks through findings one at a time with approval.
+- `/doctrine:doctrine-init` — Project setup. Creates starter CLAUDE.md and pre-commit script.
 
 No other files needed. Nothing persists between sessions.
 
-**Use the submodule** to adopt the doctrine in a project. The files live in your repo, versioned and pinned. Skills, pre-commit script, and both doctrine documents come bundled. The AI reads the actual files — rules are enforceable across sessions and contributors.
+### Use the Submodule
+
+Adopt the doctrine in a project. The files live in your repo, versioned and pinned. Skills, pre-commit script, and both doctrine documents come bundled. The AI reads the actual files — rules are enforceable across sessions and contributors.
 
     git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine
 
@@ -50,17 +60,9 @@ Changing the doctrine and updating a project to use that change are separate ste
 - **Generalized improvements** to principles, patterns, or rules should be upstreamed back to this repo so all projects benefit.
 - **Project-specific exceptions** stay in the project's overlay files. Do not pollute the doctrine with rules that only serve one codebase.
 
-## Claude Code Skills
+## Skills
 
-Five skills in `.claude/skills/`:
-
-- **`/doctrine-init`** — Project setup. Copies doctrine files, creates pre-commit script and starter CLAUDE.md.
-- **`/doctrine`** — Inline reference. Loads the CG as governing constraints for the current session. Uses CP for explanatory context, not as a second rules file.
-- **`/doctrine-check`** — Read-only audit. Runs mechanical pre-commit checks, then reviews the current diff against doctrine patterns. Reports violations and opportunities without editing.
-- **`/doctrine-apply`** — Interactive refactoring. Walks through doctrine-check findings one at a time, presenting each proposed change for approval before editing.
-- **`/doctrine-review`** — Evaluate any code against the doctrine. Works on pasted snippets, file paths, or framework code. Shows vanilla equivalents side by side.
-
-Projects with the `.doctrine` submodule get these automatically.
+Five skills in `skills/`, available via the plugin or the submodule. See §Install the Plugin for the full list and invocation commands.
 
 ## Pre-commit Checks
 

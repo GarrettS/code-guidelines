@@ -1,0 +1,14 @@
+{
+  "name": "doctrine",
+  "version": "1.0.0",
+  "description": "Code standards enforcement for vanilla JS web applications. Principles, patterns, and skills for AI-assisted development.",
+  "author": {
+    "name": "Garrett Smith",
+    "url": "https://github.com/GarrettS"
+  },
+  "homepage": "https://github.com/GarrettS/code-guidelines",
+  "repository": "https://github.com/GarrettS/code-guidelines",
+  "license": "MIT",
+  "keywords": ["code-quality", "standards", "vanilla-js", "guidelines"],
+  "skills": "./skills/"
+}
