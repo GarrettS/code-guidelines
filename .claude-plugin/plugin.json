@@ -1,6 +1,6 @@
 {
-  "name": "code-guidelines",
-  "description": "Canonical coding doctrine for vanilla JavaScript — 10 named patterns, fail-safe error handling, and automated audit/refactor skills",
+  "name": "web-app-code-standards",
+  "description": "Code standards, refactoring patterns, and review skills for JavaScript web app development in AI-assisted workflows",
   "version": "1.0.0",
   "author": {
     "name": "GarrettS"

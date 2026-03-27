@@ -1,18 +1,18 @@
 {
-  "name": "code-guidelines",
-  "id": "code-guidelines",
+  "name": "web-app-code-standards",
+  "id": "web-app-code-standards",
   "owner": {
     "name": "GarrettS"
   },
   "metadata": {
-    "description": "Canonical coding doctrine for vanilla JavaScript — patterns, principles, and automated audits",
+    "description": "Code standards, refactoring patterns, and review skills for JavaScript web app development in AI-assisted workflows",
     "version": "1.0.0"
   },
   "plugins": [
     {
-      "name": "code-guidelines",
+      "name": "web-app-code-standards",
       "source": "./",
-      "description": "Vanilla JS coding doctrine with 10 named patterns, fail-safe rules, and 5 audit/refactor skills",
+      "description": "Code standards, refactoring patterns, and review skills for JavaScript web app development in AI-assisted workflows",
       "version": "1.0.0",
       "author": {
         "name": "GarrettS"
