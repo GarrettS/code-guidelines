@@ -8,27 +8,7 @@ Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No framewo
 
 ## How to Use
 
-Two paths, depending on how far you want to go.
-
-### Install the Plugin
-
-One command in Claude Code:
-
-    /plugin install doctrine@GarrettS/code-guidelines
-
-This gives you five skills, invoked at the Claude Code prompt:
-
-- `/doctrine:doctrine` — Loads the CG as governing constraints for the session. Good for trying the doctrine out, or for repos you don't own.
-- `/doctrine:doctrine-review` — Evaluates code you paste or point to against the doctrine. Shows vanilla equivalents for framework code.
-- `/doctrine:doctrine-check` — Audits your current diff against doctrine patterns.
-- `/doctrine:doctrine-apply` — Interactive refactoring. Walks through findings one at a time with approval.
-- `/doctrine:doctrine-init` — Project setup. Creates starter CLAUDE.md and pre-commit script.
-
-No other files needed. Nothing persists between sessions.
-
-### Use the Submodule
-
-Adopt the doctrine in a project. The files live in your repo, versioned and pinned. Skills, pre-commit script, and both doctrine documents come bundled. The AI reads the actual files — rules are enforceable across sessions and contributors.
+Add this repo as a submodule. The doctrine files, skills, and pre-commit script live in your project, versioned and pinned. The AI reads the actual files — rules are enforceable across sessions and contributors.
 
     git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine
 
@@ -62,7 +42,13 @@ Changing the doctrine and updating a project to use that change are separate ste
 
 ## Skills
 
-Five skills in `skills/`, available via the plugin or the submodule. See §Install the Plugin for the full list and invocation commands.
+Five skills in `.claude/skills/`, available to projects that include this repo as a submodule:
+
+- **`/doctrine`** — Loads the CG as governing constraints for the current session. Uses CP for explanatory context, not as a second rules file.
+- **`/doctrine-init`** — Project setup. Creates starter CLAUDE.md and pre-commit script.
+- **`/doctrine-check`** — Read-only audit. Runs mechanical pre-commit checks, then reviews the current diff against doctrine patterns.
+- **`/doctrine-apply`** — Interactive refactoring. Walks through findings one at a time with approval.
+- **`/doctrine-review`** — Evaluate any code against the doctrine. Works on pasted snippets, file paths, or framework code.
 
 ## Pre-commit Checks
 

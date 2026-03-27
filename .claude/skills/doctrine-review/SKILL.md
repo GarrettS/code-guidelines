@@ -12,7 +12,7 @@ Review code the user provides — pasted snippets, file paths, or URLs — again
 
 ### 1. Load the doctrine
 
-Read code-guidelines.md from the project root or .doctrine/ subdirectory. If not found, report: "No doctrine files found. Run /doctrine-init first."
+Read `.doctrine/code-guidelines.md`. If not found, report: "No doctrine submodule found. Add it with: git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine"
 
 ### 2. Receive code to review
 
