@@ -69,7 +69,7 @@ Then in Claude Code:
 
 ## Git Submodule
 
-For projects that want the doctrine files versioned and pinned inside the repo:
+If you just want to use Web XP in Claude Code, the skill path above is simpler. Use the submodule path when you want the doctrine files present inside your own repository for direct references, pinned revisions, or project-specific doctrine work:
 
 ```bash
 git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine
