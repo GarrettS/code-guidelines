@@ -5,19 +5,23 @@ description: "Evaluate any code — pasted snippets, file paths, or framework co
 
 # Doctrine Review — Evaluate Any Code Against the Doctrine
 
-Review code the user provides — pasted snippets, file paths, or URLs — against code-guidelines.md. Unlike doctrine-check (which audits git diffs), this works on any code from any source.
+Review code the user provides — pasted snippets, file paths, or URLs — against the code standards. Unlike doctrine-check (which audits git diffs), this works on any code from any source.
 
 ## Procedure
 
 ### 1. Load the doctrine
 
-Read `.doctrine/code-guidelines.md`. If not found, report: "No doctrine submodule found. Add it with: git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine"
+Read [code-guidelines.md](../code-guidelines.md). For explanatory context, read [code-philosophy.md](../code-philosophy.md).
 
 ### 2. Receive code to review
 
+If the user provided a file path or pasted code with the command, use that. Otherwise, check if the current working directory is a project with source files. If it is, ask which files or directories to review.
+
+If none of the above, prompt: "What would you like me to review? You can paste code, give me a file path, or point me at a directory."
+
 The user provides code in one of these forms:
 - Pasted directly in the conversation
-- A file path to read
+- A file path or directory to read
 - A description of a pattern to evaluate
 
 If the user provides a React component or framework code, evaluate both the original and what the doctrine-aligned vanilla equivalent would look like.

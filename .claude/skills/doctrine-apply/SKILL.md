@@ -37,5 +37,5 @@ Report a summary: how many findings were applied, skipped, and declined.
 
 If any edits were made:
 - Clean up after each edit: remove CSS selectors, IDs, classes, and variables that the refactor made unreferenced.
-- Run `bin/pre-commit-check.sh` (if it exists) to verify no mechanical violations were introduced.
+- Run the pre-commit script (`bin/pre-commit-check.sh` if it exists in the project, otherwise `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh`) to verify no mechanical violations were introduced.
 - Review the changed JS for correctness — confirm no broken references, missing arguments, or changed behavior.

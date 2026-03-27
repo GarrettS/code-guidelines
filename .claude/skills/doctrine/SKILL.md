@@ -11,11 +11,9 @@ Load the doctrine into the current session with the correct split between govern
 
 ### 1. Locate and read doctrine files
 
-Read both files from `.doctrine/`:
-- `.doctrine/code-guidelines.md` — governing standards: principles, patterns, language rules, formatting
-- `.doctrine/code-philosophy.md` — explanatory context: how and why the doctrine works, historical framing, and supporting examples
+Read [code-guidelines.md](../code-guidelines.md) — governing standards: principles, patterns, language rules, formatting.
 
-If `.doctrine/` does not exist, report: "No doctrine submodule found. Add it with: git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine"
+Read [code-philosophy.md](../code-philosophy.md) — explanatory context: how and why the doctrine works, historical framing, and supporting examples.
 
 ### 2. Summarize active constraints
 

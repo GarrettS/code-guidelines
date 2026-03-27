@@ -5,17 +5,15 @@ description: "Read-only audit of the current git diff against all 10 code standa
 
 # Doctrine Check — Read-Only Audit
 
-Audit the current diff against code-guidelines.md. Report findings. Do not edit any files.
+Audit the current diff against the code standards. Report findings. Do not edit any files.
 
 ## Step 1 — Mechanical checks
 
-Run `bin/pre-commit-check.sh` if it exists in the project root. If it reports violations, list them and stop — mechanical issues must be fixed before structural review.
-
-If the script does not exist, note "No pre-commit script found — skipping mechanical checks" and proceed.
+Run the pre-commit script at [pre-commit-check.sh](../pre-commit-check.sh) via `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh` if no project-local `bin/pre-commit-check.sh` exists. If it reports violations, list them and stop — mechanical issues must be fixed before structural review.
 
 ## Step 2 — Structural review
 
-Read the **Patterns** and **Fail-Safe** sections of `code-guidelines.md` (check project root first, then `.doctrine/code-guidelines.md`).
+Read the **Patterns** and **Fail-Safe** sections of [code-guidelines.md](../code-guidelines.md).
 
 Get the diff to review: use `git diff --cached` if it has output, otherwise fall back to `git diff`. If both are empty, report "No staged or unstaged changes to review" and stop.
 
