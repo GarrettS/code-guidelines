@@ -1,6 +1,6 @@
 ---
 name: doctrine-review
-disable-model-invocation: true
+description: "Evaluate any code — pasted snippets, file paths, or framework code — against the code standards. Reports pattern violations and doctrine-aligned alternatives."
 allowed-tools: Read, Grep
 ---
 

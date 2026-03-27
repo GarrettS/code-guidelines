@@ -1,6 +1,6 @@
 ---
 name: doctrine-init
-disable-model-invocation: true
+description: "Project setup — creates starter CLAUDE.md and copies pre-commit script from the code standards."
 allowed-tools: Bash(bash:*), Read, Write, Glob
 ---
 

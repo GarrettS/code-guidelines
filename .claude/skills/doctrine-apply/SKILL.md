@@ -1,6 +1,6 @@
 ---
 name: doctrine-apply
-disable-model-invocation: true
+description: "Interactive refactoring — walks through doctrine-check findings one at a time with human approval before each edit."
 allowed-tools: Bash(bash:*), Read, Grep, Edit
 ---
 

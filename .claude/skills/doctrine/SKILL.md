@@ -1,6 +1,6 @@
 ---
 name: doctrine
-disable-model-invocation: true
+description: "Load code standards as governing constraints for the current session. Reads code-guidelines.md and code-philosophy.md, summarizes active constraints, and enforces them for the remainder of the conversation."
 allowed-tools: Read, Grep
 ---
 
