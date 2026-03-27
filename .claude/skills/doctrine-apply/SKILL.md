@@ -1,7 +1,6 @@
 ---
 name: doctrine-apply
 description: "Interactive refactoring — walks through doctrine-check findings one at a time with human approval before each edit."
-allowed-tools: Bash(bash:*), Read, Grep, Edit
 ---
 
 # Doctrine Apply — Interactive Guided Fixes

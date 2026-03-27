@@ -1,7 +1,6 @@
 ---
 name: doctrine-check
 description: "Read-only audit of the current git diff against all 10 code standard patterns. Reports violations and opportunities without editing files."
-allowed-tools: Bash(bash:*), Read, Grep
 ---
 
 # Doctrine Check — Read-Only Audit

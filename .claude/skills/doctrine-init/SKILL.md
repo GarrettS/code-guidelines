@@ -1,7 +1,6 @@
 ---
 name: doctrine-init
 description: "Project setup — creates starter CLAUDE.md and copies pre-commit script from the code standards."
-allowed-tools: Bash(bash:*), Read, Write, Glob
 ---
 
 # Doctrine Init — Project Setup

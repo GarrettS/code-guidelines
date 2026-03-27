@@ -1,7 +1,6 @@
 ---
 name: doctrine-review
 description: "Evaluate any code — pasted snippets, file paths, or framework code — against the code standards. Reports pattern violations and doctrine-aligned alternatives."
-allowed-tools: Read, Grep
 ---
 
 # Doctrine Review — Evaluate Any Code Against the Doctrine
