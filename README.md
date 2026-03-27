@@ -10,7 +10,13 @@ Canonical vanilla-JS RIA doctrine for AI tools and human programmers. No framewo
 
 Two paths, depending on how far you want to go.
 
-**Use the skill** to load the doctrine into an AI coding session. No files added to your project. The AI follows the guidelines for the duration of the conversation. Nothing persists between sessions. Good for trying the doctrine out, or for repos you don't own.
+**Use a skill** to get doctrine guidance in an AI coding session without adopting the full submodule. Copy the skill folder from `.claude/skills/` in this repo into your project's `.claude/skills/` directory, then invoke it in Claude Code:
+
+- `/doctrine` — Loads the CG as governing constraints for the session. Good for trying the doctrine out, or for repos you don't own.
+- `/doctrine-review` — Evaluates code you paste or point to against the doctrine. Shows vanilla equivalents for framework code. Good for learning or comparing approaches.
+- `/doctrine-check` — Audits your current diff against doctrine patterns. Good for pre-commit review.
+
+No other files needed. Nothing persists between sessions.
 
 **Use the submodule** to adopt the doctrine in a project. The files live in your repo, versioned and pinned. Skills, pre-commit script, and both doctrine documents come bundled. The AI reads the actual files — rules are enforceable across sessions and contributors.
 
