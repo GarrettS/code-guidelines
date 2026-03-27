@@ -31,7 +31,7 @@ General-purpose frameworks such as React, Vue, Angular, and Svelte were valuable
 
 Many framework patterns presented as essential are solutions to problems the framework itself imposed. When the framework's most celebrated patterns exist to solve the framework's own constraints, the framework is the complexity — not the solution to it.
 
-### What React replaces — and what it replaced it with
+### What React Router, useState, and useEffect replaced — and what they replaced it with
 
 **Routing.** The web platform provides `location.hash`, `hashchange`, `history.pushState`, and `popstate`. Routing is URL parsing plus a navigation event. The rest is application dispatch, not router machinery:
 
@@ -52,7 +52,7 @@ function applyHash() {
 window.addEventListener('hashchange', applyHash);
 ```
 
-No route objects, router context, or navigation engine are required to keep tab state in sync with the URL. React Router wraps these platform APIs in components (`<Route>`, `<Link>`), hooks (`useNavigate`, `useParams`), and a matching engine — a dependency tree for capabilities the URL already provides. Deep-links work because the URL *is* the state.
+No route objects, router context, or navigation engine are required to keep tab state in sync with the URL. React Router wraps standard browser features in components (`<Route>`, `<Link>`), hooks (`useNavigate`, `useParams`), and a matching engine — a dependency tree for capabilities the URL already provides. Deep-links work because the URL *is* the state.
 
 **State management.** React's `useState` exists because functional components discard their scope on every render. The hook lets them remember values across re-renders. But the amnesia is React's design choice — not a platform constraint. A module-scoped variable persists naturally:
 
