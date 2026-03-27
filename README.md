@@ -1,60 +1,125 @@
-# Web App Code Standards
+# Web XP
 
-Code standards, refactoring patterns, and review skills for JavaScript web app development in AI-assisted workflows. Vanilla JS. No frameworks or build tools required.
+### A Foundry for AI-Assisted Web Platform Engineering
 
-## Installation
+**Web XP** is for developers who want AI to accelerate delivery without degrading architecture. It provides governing rules, named refactoring patterns, and review skills for building applications directly on the web platform so the code stays legible, stable, and maintainable as it grows.
+
+Web XP takes the XP habits of tight feedback, simple design, and continuous refactoring and turns the dials up with AI-assisted review. The goal is not more generated code for its own sake. The goal is better code, produced faster, under active human judgment.
+
+Kent Beck once asked, "What if we took all the good practices and turned the dials up to 11?" Web XP takes that instinct seriously on the web platform: AI tightens the feedback, review, and refactoring loops rather than replacing engineering judgment.
+
+## Why It Exists
+
+AI increases output rate. Without a real standard, it also increases inconsistency, hidden complexity, and maintenance debt.
+
+Web XP exists to keep speed from dissolving into slop. It defines governing rules, reusable patterns, and review skills for applications built directly on the web platform, with an emphasis on code that remains clear, debuggable, and durable over time.
+
+The point is not to recreate framework dependency in lighter clothing. Many framework abstractions solve problems introduced by the framework itself. Web XP keeps more of the system legible by working with the DOM and standardized Web APIs directly.
+
+## What You Get
+
+- **Governing standards** in `code-guidelines.md`: principles, named patterns, language rules, and formatting defaults.
+- **Explanatory context** in `code-philosophy.md`: why the standards work, how framework-era assumptions weakened, and what replaces common abstractions.
+- **Review and refactoring skills** for Claude Code: load the doctrine, audit a diff, review arbitrary code, or walk through fixes interactively.
+- **Mechanical checks** in `bin/pre-commit-check.sh` for recurring violations such as inline handlers, hardcoded colors, loose equality, and junk-drawer filenames.
+
+## What It Covers
+
+Web XP is not just style guidance. Its concrete examples live in `code-philosophy.md`, especially around:
+
+- routing and URL-driven navigation
+- state ownership and lifetime
+- explicit initialization and data fetching
+- failure handling and graceful degradation
+- DOM ownership, dispatch, and CSS-driven state
+
+If you want the argument and examples first, start with `code-philosophy.md`. If you want the operational rules and named patterns first, start with `code-guidelines.md`.
+
+## Claude Code Skill
+
+Clone this repository somewhere convenient, then copy the skills into Claude Code's skills directory:
 
 ```bash
-git clone https://github.com/GarrettS/code-guidelines.git /tmp/code-guidelines
-cp -r /tmp/code-guidelines/.claude/skills/* ~/.claude/skills/
+git clone https://github.com/GarrettS/code-guidelines.git ~/.claude/web-xp
+mkdir -p ~/.claude/skills
+ln -sfn ~/.claude/web-xp/.claude/skills/doctrine ~/.claude/skills/doctrine
+ln -sfn ~/.claude/web-xp/.claude/skills/doctrine-init ~/.claude/skills/doctrine-init
+ln -sfn ~/.claude/web-xp/.claude/skills/doctrine-check ~/.claude/skills/doctrine-check
+ln -sfn ~/.claude/web-xp/.claude/skills/doctrine-apply ~/.claude/skills/doctrine-apply
+ln -sfn ~/.claude/web-xp/.claude/skills/doctrine-review ~/.claude/skills/doctrine-review
+```
+
+The skills read the doctrine files from the cloned repository, so keep the repo in a permanent location.
+
+To update later:
+
+```bash
+cd ~/.claude/web-xp && git pull
 ```
 
 Then in Claude Code:
 
-```
-/reload-plugins
+- `/doctrine` — load the standards into the session
+- `/doctrine-review` — review code against the doctrine
+- `/doctrine-check` — audit the current diff
+- `/doctrine-apply` — walk through fixes one at a time
+
+## Git Submodule
+
+For projects that want the doctrine files versioned and pinned inside the repo:
+
+```bash
+git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine
 ```
 
-## Skills
+The doctrine files and skills live in `.doctrine/`. The hosting project records a specific doctrine commit.
 
-Five slash commands for auditing and refactoring:
+To update a consuming project:
+
+```bash
+cd .doctrine
+git pull origin main
+cd ..
+git add .doctrine
+git commit -m "Update doctrine"
+```
+
+If you want the project-local rule set first:
+
+- read `.doctrine/code-guidelines.md` for the governing rules and named patterns
+- read `.doctrine/code-philosophy.md` for the examples and explanatory context
+- use `/doctrine-check` and `/doctrine-apply` inside the project workflow
+
+## Claude Commands
+
+Five slash commands for loading, inspecting, auditing, and refactoring:
 
 | Skill | Description |
 |-------|-------------|
-| `/doctrine` | Load the standards as governing constraints for the current session |
-| `/doctrine-init` | Project setup — creates starter CLAUDE.md and pre-commit script |
-| `/doctrine-check` | Read-only audit of the current diff against all 10 patterns |
-| `/doctrine-apply` | Interactive refactoring — walks through findings one at a time with approval |
-| `/doctrine-review` | Evaluate any code (pasted snippets, file paths, framework code) against the standards |
-
-## What's Included
-
-Each skill has access to these bundled files:
-
-- **`code-guidelines.md`** — Governing standards: principles, 10 named patterns, language rules, formatting.
-- **`code-philosophy.md`** — Explanatory context: how and why the standards work, historical framing, and supporting examples.
-- **`pre-commit-check.sh`** — Mechanical checks: inline event handlers, hardcoded colors, loose equality, long lines, etc.
-
-## Patterns
-
-The standards define 10 named patterns for recognition and enforcement:
-
-1. **Event Delegation** — One listener on a stable ancestor, inspect `event.target`
-2. **Active Object** — Hold a reference to the active element, switch directly
-3. **Shared Key** — One ID indexes data, DOM, and dispatch
-4. **Ancestor Class** — One class on a common ancestor, CSS cascade handles the rest
-5. **Dispatch Table** — Keyed object replaces conditional chains
-6. **Fail-Safe** — Every failure resolves to a user-visible outcome
-7. **CSS over JS** — CSS for visual state changes where possible
-8. **`hidden` attribute** — `el.hidden` for show/hide instead of `style.display`
-9. **Extract Shared Logic** — Parameterized function over structural duplication
-10. **Template and cloneNode** — Build one template outside the loop, clone inside
+| `/doctrine` | Load the governing rules into the current session |
+| `/doctrine-init` | Project setup - creates starter `CLAUDE.md` and pre-commit script |
+| `/doctrine-check` | Read-only audit of the current diff against doctrine patterns |
+| `/doctrine-apply` | Interactive refactoring - walks through findings one at a time with approval |
+| `/doctrine-review` | Inspect any code: pasted snippets, file paths, or framework code |
 
 ## Workflow Strategy
 
-Designed for AI-assisted development where a human drives and the AI proposes. The human reviews every line the AI produces. The standards constrain AI output and give both sides a shared vocabulary for directing corrections.
+For AI-assisted development under active human review. The standards constrain AI output and provide a shared vocabulary for correction and refactoring. They are most effective in the hands of an experienced developer who can recognize when the AI is structurally right, mechanically wrong, or conceptually off-base.
 
-Each rule traces back to a specific failure observed during development. When the AI produces an anti-pattern, tighten the rule so it doesn't recur.
+Each rule traces back to a specific failure observed during development. When the AI produces an anti-pattern, do not just fix the code. Tighten the rule so the failure is easier to catch the next time.
+
+## Canonical Workflow
+
+This repository is the canonical source for Web XP.
+
+When changing Web XP itself:
+
+1. Edit and commit in a working clone of `code-guidelines`.
+2. Push the change to the canonical GitHub repository.
+3. Update any consuming project that vendors the doctrine as a submodule.
+4. Commit the submodule pointer update in that parent project separately.
+
+Changing the doctrine and updating a consuming project to use that change are separate repository changes.
 
 ## License
 
