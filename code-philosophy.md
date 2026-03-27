@@ -6,7 +6,7 @@ Why these guidelines exist, what they protect, and who they serve.
 
 ## The Approach
 
-Vanilla JavaScript. No frameworks in production code. No build step between source and browser. The constraint produces simpler code that is easier to debug — fewer layers of abstraction, no build pipeline to untangle. Writing without a framework requires more discipline, but the result is more transparent: changes are faster because there is less between you and the running code.
+Vanilla JavaScript. No frameworks or build tools required. The constraint produces simpler code that is easier to debug — fewer layers of abstraction, no build pipeline to untangle. Writing without a framework requires more discipline, but the result is more transparent: changes are faster because there is less between you and the running code.
 
 Named patterns applied through continuous refactoring, small commits, each one leaving the code cleaner than the last. Every rule in this doctrine was extracted from production code, not adapted from textbook examples. The examples are drawn from real applications; the failures they address were observed, debugged, and fixed before the rule was written.
 
