@@ -67,3 +67,13 @@ For each finding, report:
 - **Doctrine-aligned alternative**: what the code should look like
 
 Group findings by file. If no findings: report "Doctrine check passed."
+
+### 4. Offer next steps
+
+After the report, prompt the user with actionable options based on what was found. Examples:
+
+- "Want me to walk through these one at a time and apply fixes? (`/doctrine-apply`)"
+- "Want me to fix the [specific pattern] violations first?"
+- "Want me to show the doctrine-aligned alternative for the [specific file] findings?"
+
+Tailor the prompts to the specific findings. Do not offer generic options — reference the actual violations and opportunities from the report. If no findings, skip this step.

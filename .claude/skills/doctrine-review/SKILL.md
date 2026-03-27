@@ -35,6 +35,13 @@ For each finding, report the pattern name, whether the code violates or could be
 
 When reviewing framework code, show the vanilla equivalent side by side. Do not just criticize the framework code — demonstrate what replaces it and why.
 
-### 5. If asked, generate the refactored version
+### 5. Offer next steps
 
-On request, produce the doctrine-compliant version of the code. Follow all CG rules: named patterns, fail-safe error handling, semantic naming, no framework dependencies.
+After the report, prompt the user with actionable options based on what was found. Examples:
+
+- "Want me to fix the hardcoded colors and add tokens to `:root`?"
+- "Want me to move the inline `<style>` block to an external stylesheet?"
+- "Want me to generate the doctrine-compliant version of this component?"
+- "Want me to tackle these one at a time, or apply all fixes at once?"
+
+Tailor the prompts to the specific findings. Do not offer generic options — reference the actual violations and opportunities from the report. If the review found nothing, say so and skip this step.
