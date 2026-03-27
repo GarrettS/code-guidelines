@@ -43,10 +43,13 @@ function applyHash() {
   const section = tab
     ? document.getElementById(tab + '-content')
     : null;
-  if (!section) { activateTab('home'); return; }
+  if (!section || !section.classList.contains('content')) {
+    activateTab('home');
+    return;
+  }
 
   activateTab(tab);
-  if (subtab) activateSubtab(tab, subtab);
+  activateSubtab(tab, subtab);
   if (subview) activateSubview(tab, subtab, subview);
 }
 window.addEventListener('hashchange', applyHash);
