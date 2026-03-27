@@ -33,10 +33,26 @@ Many framework patterns presented as essential are solutions to problems the fra
 
 ### What React replaces — and what it replaced it with
 
-<!-- Routing example deferred: pending navigation-tabs.js
-     refactoring to eliminate TAB_MAP/SUBTAB_MAP. -->
+**Routing.** The web platform provides `location.hash`, `hashchange`, `history.pushState`, and `popstate`. Routing is URL parsing plus a navigation event. The rest is application dispatch, not router machinery:
 
-**Routing.** The web platform provides `location.hash`, `hashchange`, `history.pushState`, and `popstate`. Routing is URL parsing plus a navigation event. The rest is application dispatch, not router machinery. No route objects, router context, or navigation engine are required to keep tab state in sync with the URL. React Router wraps these platform APIs in components (`<Route>`, `<Link>`), hooks (`useNavigate`, `useParams`), and a matching engine — a dependency tree for capabilities the URL already provides. Deep-links work because the URL *is* the state. *(Code example pending refactoring.)*
+```javascript
+function applyHash() {
+  const h = (location.hash || '').replace(/^#/, '');
+  const [tab, subtab, subview] = h.split('/');
+
+  const section = tab
+    ? document.getElementById(tab + '-content')
+    : null;
+  if (!section) { activateTab('home'); return; }
+
+  activateTab(tab);
+  if (subtab) activateSubtab(tab, subtab);
+  if (subview) activateSubview(tab, subtab, subview);
+}
+window.addEventListener('hashchange', applyHash);
+```
+
+No route objects, router context, or navigation engine are required to keep tab state in sync with the URL. React Router wraps these platform APIs in components (`<Route>`, `<Link>`), hooks (`useNavigate`, `useParams`), and a matching engine — a dependency tree for capabilities the URL already provides. Deep-links work because the URL *is* the state.
 
 **State management.** React's `useState` exists because functional components discard their scope on every render. The hook lets them remember values across re-renders. But the amnesia is React's design choice — not a platform constraint. A module-scoped variable persists naturally:
 
@@ -58,16 +74,17 @@ No hook, no re-render, no stale closure. The state is a plain object. The update
 ```javascript
 let activeScreenClass = 'screen-config';
 function showScreen(cls) {
-  document.getElementById('tab-masterquiz')
+  document.getElementById('masterquiz-content')
     .classList.replace(activeScreenClass, cls);
   activeScreenClass = cls;
 }
 ```
 ```css
-#tab-masterquiz.screen-config #mq-config,
-#tab-masterquiz.screen-quiz #mq-quiz,
-#tab-masterquiz.screen-results #mq-results {
-  display: block;
+#masterquiz-content {
+  #mq-config, #mq-quiz, #mq-results { display: none; }
+  &.screen-config #mq-config,
+  &.screen-quiz #mq-quiz,
+  &.screen-results #mq-results { display: block; }
 }
 ```
 
@@ -163,7 +180,7 @@ The grep test: if you can find a feature by searching for the same word the user
 
 The browser's CSS engine is a declarative partner to the JS logic, not just a painting tool.
 
-**Zero-iteration styling.** The Ancestor Class pattern — one state class on a common ancestor, descendant rules in CSS — offloads state-based visual changes to the browser's C++ style-recalc pass. No JS loops toggling classes on descendants. Example: `#tab-equivalence.showing-results .equiv-quiz-wrap` — the ancestor gets the class, the cascade hides/shows the descendants.
+**Zero-iteration styling.** The Ancestor Class pattern — one state class on a common ancestor, descendant rules in CSS — offloads state-based visual changes to the browser's C++ style-recalc pass. No JS loops toggling classes on descendants. Example: `#equivalence-content.showing-results .equiv-quiz-wrap` — the ancestor gets the class, the cascade hides/shows the descendants.
 
 **Predictable collision guard.** A collision in CSS is a violation of the Module Ownership contract. If two modules' styles conflict, it means they didn't grep for the prefix before implementation. The same contract that prevents ID collisions in JS prevents selector collisions in CSS.
 
