@@ -49,11 +49,7 @@ To update later:
 
 ```bash
 cd ~/.claude/web-xp && git pull
-rm -rf ~/.claude/skills/doctrine ~/.claude/skills/doctrine-init \
-  ~/.claude/skills/doctrine-check ~/.claude/skills/doctrine-apply \
-  ~/.claude/skills/doctrine-review ~/.claude/skills/code-guidelines.md \
-  ~/.claude/skills/code-philosophy.md ~/.claude/skills/pre-commit-check.sh
-cp -r ~/.claude/web-xp/.claude/skills/* ~/.claude/skills/
+cp -r .claude/skills/* ~/.claude/skills/
 ```
 
 Then in Claude Code:
