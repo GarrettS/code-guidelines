@@ -1,6 +1,6 @@
 # Code Philosophy
 
-Web XP is for accelerated AI-assisted delivery with improved architecture.
+AI-assisted XP for lean, transparent web front-end architecture.
 
 ---
 
