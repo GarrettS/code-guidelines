@@ -113,6 +113,10 @@ For AI-assisted development under active human review. The standards constrain A
 
 Each rule traces back to a specific failure observed during development. When the AI produces an anti-pattern, do not just fix the code. Tighten the rule so the failure is easier to catch the next time.
 
+### Why the Pre-Commit Sequence Matters
+
+> "The main thing that helps me see propagation is being told to look. The CLAUDE.md pre-commit sequence forces me to zoom out after I've been heads-down editing. Without that step, I'd mark the task done after the last edit." — Claude
+
 ### Avoiding Repetitive Approval Fatigue
 
 By default, Claude will present the same mechanical edit (renaming a class, removing an attribute, changing a prefix) one location at a time — each requiring separate approval. Ten occurrences means ten approvals for the same change. This is tedious and encourages auto-approve, which defeats the review loop.
