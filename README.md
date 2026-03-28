@@ -77,7 +77,15 @@ git submodule add https://github.com/GarrettS/code-guidelines.git .doctrine
 
 The doctrine files and skills live in `.doctrine/`. The hosting project records a specific doctrine commit.
 
-A submodule makes the doctrine local, and local copies drift. To stay current and avoid divergence, every consuming project should state its doctrine sync policy in its own contract or overlay file and back it with workflow or automation.
+A submodule gives your project a local snapshot of the doctrine, and snapshots drift. To avoid version drift, add a note to your project's `project.md` telling Claude to check whether `.doctrine` is behind the canonical `code-guidelines` repository before major work, at periodic commits, and when pulling upstream doctrine changes.
+
+A practical way to reinforce this is `bin/check-doctrine-sync.sh`, a lightweight pre-commit warning that checks at most once daily. Copy it into your project's `bin/` and call it from your pre-commit script:
+
+```bash
+cp .doctrine/bin/check-doctrine-sync.sh bin/
+# In your pre-commit script:
+bash bin/check-doctrine-sync.sh
+```
 
 To update a consuming project:
 
