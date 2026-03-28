@@ -1,6 +1,6 @@
 # Code Philosophy
 
-Why these guidelines exist, what they protect, and who they serve.
+Web XP is for developers who want AI to accelerate delivery and improve their web front end architecture.
 
 ---
 
