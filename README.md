@@ -121,6 +121,19 @@ For AI-assisted development under active human review. The standards constrain A
 
 Each rule traces back to a specific failure observed during development. When the AI produces an anti-pattern, do not just fix the code. Tighten the rule so the failure is easier to catch the next time.
 
+### Avoiding Repetitive Approval Fatigue
+
+By default, Claude will present the same mechanical edit (renaming a class, removing an attribute, changing a prefix) one location at a time — each requiring separate approval. Ten occurrences means ten approvals for the same change. This is tedious and encourages auto-approve, which defeats the review loop.
+
+Add this to your project's `CLAUDE.md` to fix it:
+
+```
+- **Batch cohesive mechanical changes.** When a refactoring requires the
+  same transformation applied to multiple locations (renaming an ID,
+  replacing a class, removing an attribute), apply all instances in a
+  single `replace_all` edit or a single block edit — not one at a time.
+```
+
 ## Canonical Workflow
 
 This repository is the canonical source for Web XP.
