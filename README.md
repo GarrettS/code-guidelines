@@ -42,10 +42,6 @@ First-time setup:
 ```bash
 git clone https://github.com/GarrettS/code-guidelines.git ~/.claude/web-xp
 mkdir -p ~/.claude/skills
-rm -rf ~/.claude/skills/doctrine ~/.claude/skills/doctrine-init \
-  ~/.claude/skills/doctrine-check ~/.claude/skills/doctrine-apply \
-  ~/.claude/skills/doctrine-review ~/.claude/skills/code-guidelines.md \
-  ~/.claude/skills/code-philosophy.md ~/.claude/skills/pre-commit-check.sh
 cp -r ~/.claude/web-xp/.claude/skills/* ~/.claude/skills/
 ```
 
