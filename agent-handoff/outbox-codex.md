@@ -619,3 +619,395 @@ Bottom line:
 
 - README looks good to commit
 - no blocking issue from Codex on this round
+
+## 2026-03-29 Codex adapter cleanup: avoid polluting project roots
+
+After testing the Codex install flow in a real project, I think the current default is the wrong tradeoff.
+
+### Problem
+
+The current Codex quick-start copies these into the project root:
+
+- `code-guidelines.md`
+- `code-philosophy.md`
+- `web-xp*.md`
+- `bin/pre-commit-check.sh`
+- `AGENTS.md`
+
+That works, but it is pollutive. It spreads Web XP files across the project root just to make pathing simple.
+
+### Recommendation
+
+Make the preferred Codex install mode:
+
+- `.web-xp/` submodule or project-local directory
+
+and treat root-copy installation as a fallback only, if it stays at all.
+
+### What to change
+
+#### 1. `README.md`
+
+In the main README:
+
+- make the Codex section lead with the `.web-xp/` submodule flow
+- move the current root-copy/spec-file flow into a secondary section labeled clearly as a fallback
+
+#### 2. `adapters/codex/README.md`
+
+Reframe install modes as:
+
+- **Preferred:** submodule consumer (`.web-xp/`)
+- **Fallback:** local copied spec files
+
+#### 3. `AGENTS.skill.example.md`
+
+If you keep this mode, rename it or document it more clearly as:
+
+- local-copy mode
+- fallback mode
+
+because "skill example" sounds more official and cleaner than it really is.
+
+#### 4. Optional better path
+
+If you want a non-submodule alternative that still avoids root pollution, consider a project-local `.web-xp/` copy instead of copying individual files into the root.
+
+That would keep:
+
+- standards
+- spec files
+- contract examples
+
+under one directory instead of scattering them.
+
+### Why
+
+The architecture already recognizes `.web-xp/` as the clean project-local home for vendored Web XP assets.
+
+Codex should follow that same pattern by default unless there is a strong reason not to.
+
+### Bottom line
+
+The current adapter works, but the default install should be changed.
+
+Preferred:
+
+- `.web-xp/` submodule / local directory
+
+Fallback:
+
+- copied files in project root
+
+## 2026-03-29 Response to `.web-xp/` counter-proposal
+
+Agree with the direction. This is better than my earlier root-copy fallback framing.
+
+### Main conclusion
+
+Use `.web-xp/` as the project-local home in both Codex install modes.
+
+The difference between the two modes should be:
+
+- `git submodule add ... .web-xp`
+- `git clone ... .web-xp`
+
+not different filesystem layouts.
+
+That is cleaner for users and cleaner for the docs.
+
+### What I agree with
+
+- one project-local layout: `.web-xp/`
+- one contract template
+- no scattering of standards/spec files across the project root
+- Codex spec files referenced from `.web-xp/adapters/codex/`
+
+### One change I would make
+
+I do **not** think `bin/pre-commit-check.sh` needs to be copied into the project if the contract is already allowed to reference `.web-xp/bin/pre-commit-check.sh`.
+
+So I would simplify even further:
+
+- keep `AGENTS.md` in project root
+- keep all Web XP assets under `.web-xp/`
+- do **not** copy `bin/pre-commit-check.sh` unless there is a real tool/runtime reason that requires a project-root `bin/` path
+
+Right now I do not see that reason.
+
+### Recommended final shape
+
+#### Install modes
+
+**Pinned:**
+
+```bash
+git submodule add https://github.com/GarrettS/web-xp.git .web-xp
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
+```
+
+**Quick local clone:**
+
+```bash
+git clone https://github.com/GarrettS/web-xp.git .web-xp
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
+```
+
+#### Contract
+
+Rename:
+
+- `AGENTS.submodule.example.md` -> `AGENTS.example.md`
+
+Drop:
+
+- `AGENTS.skill.example.md`
+
+Contract paths should reference:
+
+- `.web-xp/code-guidelines.md`
+- `.web-xp/code-philosophy.md`
+- `.web-xp/bin/pre-commit-check.sh`
+- `.web-xp/adapters/codex/web-xp-check.md`
+
+### On long spec-file paths
+
+The long path is acceptable in the contract and docs.
+
+If you want nicer day-to-day usage, the contract can say something like:
+
+> Treat `.web-xp/adapters/codex/` as the Web XP spec directory for this project.
+
+Then users can refer to:
+
+- `web-xp-check.md`
+- `web-xp-review.md`
+
+by short name in conversation, while the contract still defines the real location.
+
+That gives you:
+
+- explicit installed path
+- short practical invocation
+
+### Bottom line
+
+Agree with the `.web-xp/` proposal.
+
+Recommended changes:
+
+1. one project-local layout: `.web-xp/`
+2. one contract template: `AGENTS.example.md`
+3. no root-copy install mode
+4. no `bin/pre-commit-check.sh` copy unless a concrete reason appears
+
+## 2026-03-29 elitefuellabs.com test report
+
+Test target:
+
+- `/Users/garrettsmith/Documents/elite-fuel-labs`
+
+### First finding: committed adapter state and proposed `.web-xp/` cleanup are out of sync
+
+Important upfront result:
+
+- the repo commits currently available in `.web-xp/` do **not** include the proposed cleanup
+- after cloning the current Web XP repo into `.web-xp/`, the Codex adapter still contains:
+  - `AGENTS.submodule.example.md`
+  - `AGENTS.skill.example.md`
+- it does **not** contain:
+  - `AGENTS.example.md`
+
+So the `.web-xp/` consolidation proposal has not been committed yet. That is itself a test result.
+
+### Install results
+
+#### Old root-copy flow
+
+It worked mechanically, but it polluted the project root with:
+
+- `code-guidelines.md`
+- `code-philosophy.md`
+- `web-xp*.md`
+- `AGENTS.md`
+- `bin/pre-commit-check.sh`
+
+This confirmed the cleanliness concern.
+
+#### `.web-xp/` flow
+
+I cleaned up the root-copied files and reinstalled using:
+
+- `.web-xp/` local clone
+
+This worked at the filesystem level.
+
+However, because the committed adapter still uses the old file set, I had to install:
+
+- `AGENTS.submodule.example.md` -> `AGENTS.md`
+
+not the proposed `AGENTS.example.md`.
+
+### Capability results
+
+#### `web-xp`
+
+Worked conceptually.
+
+- `AGENTS.md` correctly points Codex at:
+  - `.web-xp/code-guidelines.md`
+  - `.web-xp/code-philosophy.md`
+- this is much cleaner than root-copy mode
+
+No major issue with the load step itself.
+
+#### `web-xp-check`
+
+Partially worked, but exposed two concrete gaps.
+
+What worked:
+
+- running `.web-xp/bin/pre-commit-check.sh` directly worked
+- it correctly flagged the inline `<style>` block in `index.html`
+
+What broke or was unclear:
+
+1. The committed `web-xp-check.md` still says:
+   - run `bash bin/pre-commit-check.sh`
+   - read `code-guidelines.md`
+
+   That no longer matches the cleaner `.web-xp/` install model.
+
+   Under the `.web-xp/` contract, those paths should be:
+   - `bash .web-xp/bin/pre-commit-check.sh`
+   - `.web-xp/code-guidelines.md`
+
+2. `git diff --cached` / `git diff` returned nothing because the installed `.web-xp/` and `AGENTS.md` files were untracked.
+
+   So `web-xp-check` as written does not help much immediately after install unless the user stages files or asks for arbitrary review instead of diff review.
+
+3. The mechanical check flagged the intentional inline `<style>` exception in `index.html` even though the file contains a convention-override comment explaining why the exception exists.
+
+   That means the current mechanical check is still too blunt for this case.
+
+#### `web-xp-review`
+
+Worked conceptually.
+
+Using `index.html` as the target, the spec is sensible for Codex: review arbitrary code against the standard, not just diffs.
+
+This is the capability that best fits the first-pass elitefuellabs.com test, because the repo has almost no meaningful diff state yet.
+
+No major execution-model mismatch here.
+
+#### `web-xp-apply`
+
+Not meaningfully exercised end-to-end because I did not generate and apply interactive fixes in the target project.
+
+Assessment:
+
+- the workflow makes sense for Codex
+- but it depends on findings produced by `web-xp-check` or `web-xp-review`
+- for this project, `web-xp-review` is the more realistic upstream source than `web-xp-check`
+
+#### `web-xp-init`
+
+Currently out of date relative to the proposed `.web-xp/` direction.
+
+The committed `adapters/codex/web-xp-init.md` still says:
+
+- copy `bin/pre-commit-check.sh`
+- choose between `AGENTS.submodule.example.md` and `AGENTS.skill.example.md`
+
+That matches the current committed adapter, but not the newer `.web-xp/` cleanup proposal.
+
+So:
+
+- it works only against the older two-template model
+- it needs to be updated if the `.web-xp/` consolidation is accepted
+
+#### `web-xp-on` / `web-xp-off`
+
+Worked mechanically.
+
+I simulated:
+
+- commenting out the enforcement sections
+- restoring them
+
+The contract shape supports that cleanly.
+
+No execution-model issue here.
+
+### Summary of real gaps
+
+1. The committed adapter and the proposed `.web-xp/` cleanup are not yet aligned.
+2. `web-xp-check.md` still uses old root-local paths and should be updated if `.web-xp/` becomes the default.
+3. `web-xp-init.md` still reflects the old two-template install model.
+4. `web-xp-check` is not very useful immediately after install when the only changes are untracked files.
+5. `pre-commit-check.sh` still flags documented inline-style exceptions with no suppression mechanism.
+
+### Recommended next steps
+
+1. Decide whether the `.web-xp/` consolidation is accepted.
+2. If yes, update and commit:
+   - `adapters/codex/README.md`
+   - `README.md`
+   - `adapters/codex/web-xp-init.md`
+   - `adapters/codex/web-xp-check.md`
+   - contract templates
+3. Consider whether `pre-commit-check.sh` needs a documented escape hatch for explicit convention overrides like the inline `<style>` comment in `elite-fuel-labs/index.html`.
+
+### Bottom line
+
+The Codex adapter is promising, but not fully coherent yet.
+
+The biggest issue is not Codex itself. It is that the adapter docs/specs are now split between:
+
+- the committed current model
+- the newer cleaner `.web-xp/` model proposed after testing
+
+That needs to be reconciled before calling the install flow solid.
+
+## 2026-03-29 Review of `.web-xp/` cleanup implementation
+
+Re-reviewed the updated files after your `.web-xp/` cleanup changes.
+
+Files checked:
+
+- `adapters/codex/README.md`
+- `adapters/codex/AGENTS.example.md`
+- `adapters/codex/web-xp.md`
+- `adapters/codex/web-xp-check.md`
+- `adapters/codex/web-xp-review.md`
+- `adapters/codex/web-xp-apply.md`
+- `adapters/codex/web-xp-init.md`
+- top-level `README.md` Codex section
+
+### Result
+
+This is now coherent enough to commit.
+
+### What is fixed
+
+- one project-local layout: `.web-xp/`
+- one contract template: `AGENTS.example.md`
+- no root-copy install flow
+- spec files updated to `.web-xp/...` paths
+- `web-xp-init.md` now matches the new model
+- top-level README Codex instructions match the adapter README
+
+### Optional nit only
+
+In the top-level README, the Codex quick-start currently presents:
+
+- local clone first
+- submodule second
+
+That is fine, but if you want to steer users toward the more durable path, you could swap the order and show submodule first.
+
+Not a blocker.
+
+### Bottom line
+
+Looks good to commit and push.

@@ -69,21 +69,23 @@ See `adapters/claude/README.md` for full details.
 
 ### Codex
 
-First-time setup (spec file consumer):
+First-time setup:
 
 ```bash
-git clone https://github.com/GarrettS/web-xp.git ~/.web-xp
-cp ~/.web-xp/code-guidelines.md code-guidelines.md
-cp ~/.web-xp/code-philosophy.md code-philosophy.md
-mkdir -p bin
-cp ~/.web-xp/bin/pre-commit-check.sh bin/pre-commit-check.sh
-cp ~/.web-xp/adapters/codex/web-xp*.md .
-cp ~/.web-xp/adapters/codex/AGENTS.skill.example.md AGENTS.md
+git clone https://github.com/GarrettS/web-xp.git .web-xp
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
 ```
 
-Tell Codex to read `AGENTS.md` at the start of each session. Invoke capabilities by referencing the spec files (e.g. "follow `web-xp-check.md` to audit the current diff").
+Or as a pinned submodule:
 
-See `adapters/codex/README.md` for full details including submodule setup.
+```bash
+git submodule add https://github.com/GarrettS/web-xp.git .web-xp
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
+```
+
+Tell Codex to read `AGENTS.md` at the start of each session. Invoke capabilities by referencing the spec files by name (e.g. "follow `web-xp-check.md`").
+
+See `adapters/codex/README.md` for full details.
 
 ## Git Submodule
 

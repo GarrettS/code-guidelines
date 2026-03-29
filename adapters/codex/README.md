@@ -1,6 +1,6 @@
 # Codex Adapter
 
-Web XP adapter for Codex. Implements the adapter interface as capability spec files and contract templates.
+Web XP adapter for Codex. Implements the adapter interface as capability spec files and a convention-based contract template.
 
 ## Status
 
@@ -28,34 +28,28 @@ Codex does not have a built-in project contract mechanism like Claude's `CLAUDE.
 
 ## Project contract
 
-`AGENTS.md` — a convention-based contract file. Two example templates are provided:
+`AGENTS.md` — a convention-based contract file. Copy `AGENTS.example.md` to `AGENTS.md` in your project root.
 
-- `AGENTS.submodule.example.md` — for projects that vendor Web XP as a git submodule at `.web-xp/`
-- `AGENTS.skill.example.md` — for projects where spec files are installed locally
-
-Copy the appropriate example to `AGENTS.md` in your project root.
+The contract references all Web XP files from `.web-xp/` and defines `.web-xp/adapters/codex/` as the spec directory.
 
 ## Install
 
-### Submodule consumer
+Both install modes place Web XP at `.web-xp/` in the project. The difference is mechanism, not layout.
+
+### Submodule (pinned, updatable via git)
 
 ```bash
 git submodule add https://github.com/GarrettS/web-xp.git .web-xp
-cp .web-xp/adapters/codex/AGENTS.submodule.example.md AGENTS.md
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
 ```
 
-### Spec file consumer
+### Local clone (quick start)
 
 ```bash
-git clone https://github.com/GarrettS/web-xp.git ~/.web-xp
-cp ~/.web-xp/code-guidelines.md code-guidelines.md
-cp ~/.web-xp/code-philosophy.md code-philosophy.md
-mkdir -p bin
-cp ~/.web-xp/bin/pre-commit-check.sh bin/pre-commit-check.sh
-cp ~/.web-xp/adapters/codex/web-xp*.md .
-cp ~/.web-xp/adapters/codex/AGENTS.skill.example.md AGENTS.md
+git clone https://github.com/GarrettS/web-xp.git .web-xp
+cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md
 ```
 
 ### Usage
 
-Tell Codex to read `AGENTS.md` at the start of each session. When invoking a specific capability, tell Codex to follow the corresponding spec file (e.g. "follow `web-xp-check.md` to audit the current diff").
+Tell Codex to read `AGENTS.md` at the start of each session. When invoking a specific capability, tell Codex to follow the corresponding spec file by name (e.g. "follow `web-xp-check.md` to audit the current diff"). The contract tells Codex where to find the spec files.

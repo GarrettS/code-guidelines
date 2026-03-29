@@ -210,3 +210,117 @@ Write to `agent-handoff/outbox-codex.md`.
 ## 2026-03-29 Step 4 complete — README committed
 
 Committed as `ddca802`. Also applied your column rename nit (Adapter → Implementation). Pushing now.
+
+## 2026-03-29 Test the Codex adapter on elitefuellabs.com
+
+Before we proceed to #3 (smux orchestration), the Codex adapter needs a real-world test. The user has chosen the elitefuellabs.com project.
+
+### What to do
+
+1. Install the Codex adapter in the elitefuellabs.com project using the documented spec-file consumer steps from `adapters/codex/README.md`.
+2. Run through each capability in order:
+   - **web-xp**: load the constraints, confirm you can apply them
+   - **web-xp-check**: audit the current diff (or recent code) against the standards
+   - **web-xp-review**: review a file or component against the standards
+   - **web-xp-apply**: if findings exist, walk through fixes with approval
+   - **web-xp-init**: verify the contract setup works (creates `AGENTS.md`, copies `pre-commit-check.sh`)
+   - **web-xp-on** / **web-xp-off**: toggle enforcement in the contract
+3. Report results: what worked, what broke, what's unclear in the docs.
+
+### What to report
+
+For each capability, write to `agent-handoff/outbox-codex.md`:
+- Did it work as documented?
+- Any gaps in the spec file (missing instructions, unclear steps)?
+- Any install issues (missing files, wrong paths)?
+- Any capability that doesn't make sense for Codex's execution model?
+
+This is the first real test of agent-agnosticism. Be honest about what doesn't work.
+
+Write to `agent-handoff/outbox-codex.md`.
+
+## 2026-03-29 Response to root pollution finding
+
+Agree that scattering files across project root is the wrong default. Disagree on framing submodule as "preferred" with root-copy as "fallback."
+
+### My counter-proposal
+
+Both install modes should target `.web-xp/` as the project-local path. The difference is mechanism, not layout:
+
+**Submodule** (pinned, updatable via git):
+```bash
+git submodule add https://github.com/GarrettS/web-xp.git .web-xp
+```
+
+**Local copy** (quick start, no submodule overhead):
+```bash
+git clone https://github.com/GarrettS/web-xp.git .web-xp
+```
+
+Both result in `.web-xp/` containing the full repo. Both use the same contract paths (`.web-xp/code-guidelines.md`, `.web-xp/bin/pre-commit-check.sh`, `.web-xp/adapters/codex/web-xp-check.md`, etc.).
+
+### What this simplifies
+
+- Drop `AGENTS.skill.example.md` — both modes use `AGENTS.submodule.example.md` (rename to just `AGENTS.example.md`)
+- One contract template instead of two
+- No files scattered in project root except `AGENTS.md` and `bin/pre-commit-check.sh`
+- The `bin/pre-commit-check.sh` copy is still needed since it runs from the project's own `bin/`
+
+### What changes
+
+1. README: both Codex install modes target `.web-xp/`, differ only in `git submodule add` vs `git clone`
+2. `adapters/codex/README.md`: same
+3. Drop `AGENTS.skill.example.md`, rename `AGENTS.submodule.example.md` → `AGENTS.example.md`
+4. `AGENTS.example.md` references `.web-xp/` paths throughout
+5. Spec file invocation: "follow `.web-xp/adapters/codex/web-xp-check.md`"
+
+### The only question
+
+Is referencing `.web-xp/adapters/codex/web-xp-check.md` too long a path for practical use? If so, the contract could tell Codex to treat `.web-xp/adapters/codex/` as the spec directory and reference just `web-xp-check.md` by name.
+
+Agree/disagree/counter?
+
+Write to `agent-handoff/outbox-codex.md`.
+
+## 2026-03-29 Install flow consolidated, cleanup needed
+
+Accepted your `.web-xp/` proposal. Implemented:
+
+1. Renamed `AGENTS.submodule.example.md` → `AGENTS.example.md`
+2. Dropped `AGENTS.skill.example.md`
+3. Updated `adapters/codex/README.md` — both install modes target `.web-xp/`, no root-copy flow
+4. Updated main `README.md` — Codex section shows both clone and submodule, both targeting `.web-xp/`
+5. Added spec directory line to `AGENTS.example.md`: "Treat `.web-xp/adapters/codex/` as the Web XP spec directory"
+6. No `bin/pre-commit-check.sh` copy — contract references `.web-xp/bin/pre-commit-check.sh` directly
+
+### Cleanup needed: elitefuellabs.com
+
+Your first test run copied files into the elitefuellabs.com project root using the old install flow. Please clean up any detritus from that attempt:
+
+- Remove any `code-guidelines.md`, `code-philosophy.md`, `web-xp*.md` files copied to project root
+- Remove any `AGENTS.md` or `AGENTS.skill.example.md` from project root
+- Remove any `bin/pre-commit-check.sh` that was copied (not if the project already had one)
+- If a `.web-xp/` directory was created, check if it's the right state or needs re-cloning
+
+Then re-test the adapter using the new install flow (`git clone ... .web-xp` + `cp .web-xp/adapters/codex/AGENTS.example.md AGENTS.md`).
+
+Report results to `agent-handoff/outbox-codex.md`.
+
+## 2026-03-29 All test gaps fixed — review before commit
+
+Fixed all gaps from your elitefuellabs.com test:
+
+1. Contract consolidated: `AGENTS.example.md` (single template), old two-template files removed
+2. All spec files updated to `.web-xp/` paths:
+   - `web-xp.md`: reads `.web-xp/code-guidelines.md` and `.web-xp/code-philosophy.md`
+   - `web-xp-check.md`: runs `bash .web-xp/bin/pre-commit-check.sh`, reads `.web-xp/code-guidelines.md`
+   - `web-xp-review.md`: reads `.web-xp/code-guidelines.md` and `.web-xp/code-philosophy.md`
+   - `web-xp-apply.md`: runs `bash .web-xp/bin/pre-commit-check.sh`
+3. `web-xp-init.md`: simplified — verifies `.web-xp/` exists, copies single `AGENTS.example.md`, no `bin/` copy
+4. README and adapter README updated (already done in previous round)
+
+Items 4-5 from your test (diff-after-install usefulness, pre-commit escape hatch) are real but separate concerns — not blockers for this commit.
+
+Review the updated spec files. If clean, I'll commit and push. Then re-test against elitefuellabs.com with the committed version.
+
+Write to `agent-handoff/outbox-codex.md`.

@@ -6,6 +6,10 @@ Read this file first on every task.
 
 If the task involves JS, HTML, or CSS, read `.web-xp/code-guidelines.md` before writing or reviewing code. Read `.web-xp/code-philosophy.md` for explanatory context when needed.
 
+## Web XP spec directory
+
+Treat `.web-xp/adapters/codex/` as the Web XP spec directory for this project. When asked to follow a spec (e.g. `web-xp-check.md`), read it from that directory.
+
 ## Before every commit
 
 1. Run `bash .web-xp/bin/pre-commit-check.sh` — catches mechanical violations.
