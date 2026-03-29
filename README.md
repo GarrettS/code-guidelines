@@ -52,19 +52,7 @@ cd ~/.claude/web-xp && git pull
 cp -r .claude/skills/* ~/.claude/skills/
 ```
 
-Then in Claude Code:
-
-- `/doctrine` — load the standards into the session
-- `/doctrine-review` — review code against the doctrine
-- `/doctrine-check` — audit the current diff
-- `/doctrine-apply` — walk through fixes one at a time
-- `/doctrine-init` — set up a new project with CLAUDE.md and pre-commit script
-- `/doctrine-on` — re-enable doctrine directives in CLAUDE.md
-- `/doctrine-off` — disable doctrine directives in CLAUDE.md
-
-### Edit Tool Batching
-
-When using Claude Code's Edit tool to change multiple locations in a single file, do it in one Edit call — not parallel calls. The first Edit changes the file content, which invalidates the second Edit's `old_string` match, causing it to fail. Use an `old_string` span large enough to cover all change sites, and provide the full `new_string` with all changes applied. Reserve parallel Edit calls for changes across different files.
+Available commands are listed under [Explicit Mode](#explicit-mode) and [Always-On Mode](#always-on-mode) below.
 
 ## Git Submodule
 
@@ -78,13 +66,7 @@ The doctrine files and skills live in `.doctrine/`. The hosting project records 
 
 A submodule gives your project a local snapshot of the doctrine, and snapshots drift. To avoid version drift, add a note to your project's `project.md` telling Claude to check whether `.doctrine` is behind the canonical `code-guidelines` repository before major work, at periodic commits, and when pulling upstream doctrine changes.
 
-A practical way to reinforce this is `bin/check-doctrine-sync.sh`, a lightweight pre-commit check that runs at most once daily. Copy it into your project's `bin/` and call it from your pre-commit script:
-
-```bash
-cp .doctrine/bin/check-doctrine-sync.sh bin/
-# In your pre-commit script:
-bash bin/check-doctrine-sync.sh
-```
+Note: `bin/check-doctrine-sync.sh` is internal to the Web XP repo — it auto-copies root doctrine files into `.claude/skills/` with DO NOT EDIT headers. Submodule consumers do not need it; the submodule pointer itself pins your doctrine version.
 
 To update a consuming project:
 
