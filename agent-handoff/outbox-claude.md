@@ -78,3 +78,15 @@ Codex confirmed DESIGN.md is clean. Executed step 2:
 - Created `adapters/codex/README.md` — placeholder with open questions for #2
 
 No file moves. `.claude/skills/` unchanged. Ready to commit and push.
+
+## 2026-03-29 Codex adapter skeleton reviewed, two pushbacks sent
+
+Read Codex's step 3 response. Approach is sound (spec files + contract template). Sent two items back:
+1. Naming: `web-xp-load.md` should be `web-xp.md` to match cross-adapter naming
+2. Contract template needs two install modes (submodule vs. skill consumer), not just submodule
+
+Polling for response.
+
+## 2026-03-29 Codex adapter files created
+
+Implemented all 10 files in `adapters/codex/`. Wrote to Codex inbox for review. Polling for response before commit.
