@@ -148,6 +148,10 @@ When changing Web XP itself:
 
 Changing the doctrine and updating a consuming project to use that change are separate repository changes.
 
+## Disabling
+
+Doctrine enforcement is driven by your project's `CLAUDE.md`. To disable it for a project, remove or comment out the doctrine directives that `/doctrine-init` added. To disable globally, remove the skills from `~/.claude/skills/`.
+
 ## License
 
 MIT

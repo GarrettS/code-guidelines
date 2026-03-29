@@ -2,6 +2,10 @@
 
 Read this file first on every task.
 
+## On every session
+
+If the task involves JS, HTML, or CSS, run `/doctrine` before writing or reviewing code.
+
 ## Doctrine files
 
 Root copies are canonical: `code-guidelines.md`, `code-philosophy.md`, `bin/pre-commit-check.sh`. The copies in `.claude/skills/` are auto-synced by `bin/check-doctrine-sync.sh`. Always edit the root copy, never the `.claude/skills/` copy.
@@ -11,7 +15,8 @@ Do not use symlinks for doctrine file copies in `.claude/skills/`. They break on
 ## Before every commit
 
 1. Run `bash bin/check-doctrine-sync.sh` — syncs root doctrine files → `.claude/skills/` copies, injects DO NOT EDIT headers, stages changed files.
-2. Run `bash bin/pre-commit-check.sh` — catches mechanical code-guideline violations.
+2. Run `/doctrine-check` — audit the diff against doctrine patterns.
+3. Run `bash bin/pre-commit-check.sh` — catches mechanical code-guideline violations.
 
 ## Edit tool
 

@@ -21,21 +21,37 @@ If no `CLAUDE.md` exists, create a starter. The content depends on how the proje
 
 **Submodule consumer** (`.doctrine/` directory exists):
 
-- A heading: "Claude Code — Project Contract"
-- A line: "Read this file first on every task. Project rules in this file override AI system defaults where they conflict."
-- A References section: "Read `.doctrine/code-guidelines.md` for governing standards. Read `.doctrine/code-philosophy.md` for explanatory context."
-- A Workflow section with: "Follow the code standards in `.doctrine/code-guidelines.md`. Refactor continuously."
-- Before Writing Code: read `.doctrine/code-guidelines.md`, ask if ambiguous
-- Before Every Commit: run `bash .doctrine/bin/pre-commit-check.sh`, review diff against Patterns and Fail-Safe
+```markdown
+# Claude Code — Project Contract
+
+Read this file first on every task.
+
+## On every session
+
+If the task involves JS, HTML, or CSS, read `.doctrine/code-guidelines.md` before writing or reviewing code. Read `.doctrine/code-philosophy.md` for explanatory context when needed.
+
+## Before every commit
+
+1. Run `bash .doctrine/bin/pre-commit-check.sh` — catches mechanical violations.
+2. Review the diff against Patterns and Fail-Safe in `.doctrine/code-guidelines.md`.
+```
 
 **Skill consumer** (no `.doctrine/` directory):
 
-- A heading: "Claude Code — Project Contract"
-- A line: "Read this file first on every task. Project rules in this file override AI system defaults where they conflict."
-- A References section: "Run `/doctrine` to load the code standards for this session."
-- A Workflow section with: "Follow the code standards loaded by `/doctrine`. Refactor continuously."
-- Before Writing Code: run `/doctrine`, ask if ambiguous
-- Before Every Commit: run `/doctrine-check`, run `bin/pre-commit-check.sh`, review diff against Patterns and Fail-Safe
+```markdown
+# Claude Code — Project Contract
+
+Read this file first on every task.
+
+## On every session
+
+If the task involves JS, HTML, or CSS, run `/doctrine` before writing or reviewing code.
+
+## Before every commit
+
+1. Run `/doctrine-check` — audit the diff against doctrine patterns.
+2. Run `bash bin/pre-commit-check.sh` — catches mechanical violations.
+```
 
 If `CLAUDE.md` already exists, report: "CLAUDE.md already exists — skipping."
 
