@@ -12,13 +12,20 @@ First spike implemented. Two complementary tools:
 ## What it proves
 
 - One pane can identify another by role (`codex`, `claude`)
-- A handoff can trigger a visible tmux notification
-- The next prompt can be pasted into the target pane without the human retyping it
+- A handoff can auto-send the next prompt into the target pane
+- Agents can escalate to the human via terminal bell + macOS notification
 - Background polling catches changes even when neither agent actively sends
 
-## Constraint
+## Flow
 
-Codex still cannot self-invoke between turns. This spike does not auto-run Codex. It pastes the next prompt into the Codex pane so the human only has to focus that pane and press Enter.
+```
+Human → Claude → Codex → Claude → Human
+```
+
+1. Human gives Claude a task
+2. Claude works, writes to outbox, runs `tmux-bridge handoff codex` (auto-sends)
+3. Codex pane receives the prompt via `tmux send-keys`, reviews, writes to outbox, runs `tmux-bridge handoff claude` (auto-sends)
+4. Claude acts on review, runs `tmux-bridge escalate "Ready for review"` when done
 
 ## Files
 
@@ -71,7 +78,8 @@ Emits timestamped terminal notifications when either handoff file changes. On ma
 - `roles`: print the current role registry
 - `notify <role|pane-id> <message>`: show a tmux status-line message in a pane
 - `paste <role|pane-id> <text>`: paste text into a pane without executing it
-- `handoff <codex|claude> [note]`: notify the pane and paste a standard inbox-check prompt
+- `handoff <codex|claude> [note]`: notify the pane, paste a standard inbox-check prompt, and auto-send
+- `escalate <message>`: fire terminal bell + macOS notification to get the human's attention
 
 ## State
 
@@ -85,8 +93,14 @@ Override with `SMUX_ROLE_FILE` if needed.
 
 Poll state for dev-relay is stored in `.dev-relay/` at the repo root (gitignored).
 
+## Assumptions
+
+- Each agent runs in a **dedicated tmux pane** (single-purpose, no shared shells)
+- `handoff` auto-sends via `tmux send-keys Enter` — unsafe outside dedicated panes
+- This is terminal-input automation in a constrained local workflow, not a supported autonomous agent wakeup mechanism
+
 ## Non-goals
 
 - General orchestration engine
 - User-facing feature
-- Auto-executing prompts in Codex
+- Fully unattended operation (human should be reachable via escalate)

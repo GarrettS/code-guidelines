@@ -15,13 +15,15 @@ Usage:
   tmux-bridge notify <role|pane-id> <message>
   tmux-bridge paste <role|pane-id> <text>
   tmux-bridge handoff <codex|claude> [note]
+  tmux-bridge escalate <message>
 
 Environment:
   SMUX_ROLE_FILE   Override role registry path
 
 Notes:
   - Roles are stored outside the repo by default: ~/.web-xp/smux/roles.tsv
-  - 'handoff' pastes a standard inbox-check prompt into the target pane.
+  - 'handoff' pastes a standard inbox-check prompt and auto-sends it.
+  - 'escalate' fires terminal bell + macOS notification to get the human's attention.
 EOF
 }
 
@@ -175,6 +177,20 @@ case "$cmd" in
     tmux display-message -t "$pane_id" "smux handoff ready for $role"
     tmux set-buffer -- "$prompt"
     tmux paste-buffer -d -t "$pane_id"
+    tmux send-keys -t "$pane_id" Enter
+    ;;
+
+  escalate)
+    shift
+    message="${*:-Agent needs human attention}"
+    # Terminal bell
+    printf '\a'
+    # macOS notification
+    if command -v osascript >/dev/null 2>&1; then
+      safe_message="${message//\"/\\\"}"
+      osascript -e "display notification \"$safe_message\" with title \"smux: human needed\" sound name \"Glass\"" 2>/dev/null || true
+    fi
+    echo "ESCALATE: $message"
     ;;
 
   ""|-h|--help|help)
