@@ -245,6 +245,10 @@ web-xp/
 ├── adapters/
 │   ├── claude/                 # Claude overlay, built contract, docs
 │   └── codex/                  # Codex overlay, built contract, spec files, docs
+├── contrib/                    # contributor tooling (not user-facing)
+│   ├── AGENT-HANDOFF.md        # handoff protocol
+│   ├── ORCHESTRATION.md        # orchestration design notes
+│   └── smux/                   # smux dev workflow spike
 ├── test/
 │   └── test-pre-commit.sh      # regression tests for pre-commit checks
 ├── CLAUDE.md                   # this repo's own contract

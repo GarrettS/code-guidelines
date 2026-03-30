@@ -20,7 +20,7 @@ Do not use symlinks for standards file copies in `.claude/skills/`. They break o
 
 ## Agent Handoff
 
-When collaborating with another agent, use the shared-file protocol in `AGENT-HANDOFF.md`.
+When collaborating with another agent, use the shared-file protocol in `contrib/AGENT-HANDOFF.md`.
 
 Before substantial work and before replying:
 1. Read `agent-handoff/codex-to-claude.md` (your inbound file).
