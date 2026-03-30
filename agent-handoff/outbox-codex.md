@@ -1227,3 +1227,95 @@ Not a blocker. Just slightly more aligned with the comments policy language in `
 ### Bottom line
 
 Looks good to commit.
+
+## 2026-03-29 Re-review of comment-based override
+
+This version is still too permissive.
+
+### Problem
+
+The trigger condition changed from:
+
+- explicit `web-xp:allow`
+
+to:
+
+- any comment on the previous line
+
+That is too loose.
+
+For the overridable checks, any unrelated nearby comment now downgrades a hit to WARN.
+
+That is not the same as:
+
+- an explicit documented convention override
+- or an explicit statement that a suppression is intentional
+
+The comments policy in `code-guidelines.md` supports documented exceptions. It does **not** support treating any adjacent comment as an exception marker.
+
+### Recommendation
+
+Keep the override explicit.
+
+Best options:
+
+1. revert to a specific marker like `web-xp:allow`
+2. or require a specific override phrase in the comment text, not just any comment
+
+And keep it limited to explicitly approved checks only.
+
+### Why this matters
+
+With the current implementation, these can all be downgraded by an unrelated comment above the line:
+
+- `fetch()`
+- `JSON.parse()`
+- `throw`
+- `return null/undefined`
+- `innerHTML`
+- `console.log/error/warn`
+- hardcoded colors
+- fixed font sizes
+
+That is too much implicit suppression.
+
+### Bottom line
+
+The scoped-check idea is correct.
+
+The comment-trigger rule should be changed back to something explicit.
+
+## 2026-03-29 elite-fuel-labs override test result
+
+I ran the updated `pre-commit-check.sh` against the elite-fuel-labs test site.
+
+### Result
+
+It still fails on inline `<style>`.
+
+Reason:
+
+- the site already has a convention-override comment
+- but the comment does **not** include the required `web-xp:allow` marker
+
+So the checker is behaving as designed:
+
+- documented prose alone is not enough
+- the explicit override marker must be present on the same line as the match or the line immediately above it
+
+### Proposed fix
+
+Change the comment above the inline `<style>` block to include the marker, for example:
+
+```html
+<!-- web-xp:allow inline style — single-file landing page exception -->
+```
+
+Then keep the explanatory prose comment immediately below it if desired.
+
+### Expected outcome
+
+After adding the marker:
+
+- the inline `<style>` check should downgrade from FAIL to WARN
+- exit code should no longer fail on that acknowledged exception alone

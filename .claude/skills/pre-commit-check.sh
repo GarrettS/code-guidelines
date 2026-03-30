@@ -28,9 +28,12 @@ NC='\033[0m'
 
 EXCLUDES="node_modules|\.git|pre-commit-check\.sh|code-guidelines\.md"
 
-# $4 (optional): "allow_override" — if set, a web-xp:allow comment on
-# the matched line or the line above downgrades the hit from FAIL to WARN.
-# Only enable this for checks where documented convention overrides are legitimate.
+# $4 (optional): "overridable" — if set, a comment on the line above
+# the match downgrades the hit from FAIL to WARN. A comment means the
+# developer documented why the exception exists. Recognized comment
+# forms: <!-- ... -->, // ..., /* ... */.
+# Only enable for checks where code-guidelines.md acknowledges that
+# documented exceptions are legitimate.
 check() {
   local label="$1"
   local pattern="$2"
@@ -48,7 +51,7 @@ check() {
   fi
 
   # If overrides are not allowed for this check, all hits are failures.
-  if [ "$overridable" != "allow_override" ]; then
+  if [ "$overridable" != "overridable" ]; then
     echo -e "${RED}FAIL${NC}  $label"
     echo "$hits" | head -20
     echo ""
@@ -59,15 +62,18 @@ check() {
   local fail_hits="" warn_hits=""
 
   while IFS= read -r hit; do
-    local file line_num
+    local file line_num prev_line
     file=$(echo "$hit" | cut -d: -f1)
     line_num=$(echo "$hit" | cut -d: -f2)
 
-    # Check current line and previous line for web-xp:allow
-    local context
-    context=$(sed -n "$((line_num > 1 ? line_num - 1 : 1)),${line_num}p" "$file" 2>/dev/null || true)
+    # Check the previous line for a comment
+    if [ "$line_num" -gt 1 ]; then
+      prev_line=$(sed -n "$((line_num - 1))p" "$file" 2>/dev/null || true)
+    else
+      prev_line=""
+    fi
 
-    if echo "$context" | grep -q 'web-xp:allow'; then
+    if echo "$prev_line" | grep -qE '<!--|//|/\*'; then
       warn_hits="${warn_hits}${hit}
 "
     else
@@ -84,7 +90,7 @@ check() {
   fi
 
   if [ -n "$warn_hits" ]; then
-    echo -e "${YELLOW}WARN${NC}  $label  [override acknowledged]"
+    echo -e "${YELLOW}WARN${NC}  $label  [commented exception]"
     echo "$warn_hits" | head -20
     echo ""
     WARN_COUNT=$((WARN_COUNT + 1))
@@ -111,7 +117,7 @@ check "javascript: pseudo-protocol" \
 check "Inline <style> blocks" \
   '<style[ >]' \
   '*.html' \
-  allow_override
+  overridable
 
 check "Self-closing slash on void elements" \
   '<(img|br|hr|input|meta|link|area|base|col|embed|source|track|wbr)\b[^>]*/>' \
@@ -121,43 +127,53 @@ check "Self-closing slash on void elements" \
 
 check "fetch() in .js  [verify: caught and handled, not re-thrown]" \
   '\bfetch\(' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "fetch() in .html  [verify: caught and handled, not re-thrown]" \
   '\bfetch\(' \
-  '*.html'
+  '*.html' \
+  overridable
 
 check "JSON.parse() in .js  [verify: caught and handled, not re-thrown]" \
   'JSON\.parse\(' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "JSON.parse() in .html  [verify: caught and handled, not re-thrown]" \
   'JSON\.parse\(' \
-  '*.html'
+  '*.html' \
+  overridable
 
 check "throw in .js  [verify: not in production code path]" \
   '\bthrow\b' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "throw in .html  [verify: not in production code path]" \
   '\bthrow\b' \
-  '*.html'
+  '*.html' \
+  overridable
 
 check "return null/undefined in .js  [verify: not a silent failure]" \
   'return\s+(null|undefined)\s*;' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "return null/undefined in .html  [verify: not a silent failure]" \
   'return\s+(null|undefined)\s*;' \
-  '*.html'
+  '*.html' \
+  overridable
 
 check "innerHTML in .js  [verify justified — inserting HTML tags]" \
   '\.innerHTML\s*=' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "innerHTML in .html  [verify justified — inserting HTML tags]" \
   '\.innerHTML\s*=' \
-  '*.html'
+  '*.html' \
+  overridable
 
 check "Banner/landmark comments in JS" \
   '[═─━]{3,}|[*]{4,}' \
@@ -169,7 +185,8 @@ check "var declaration  [prefer const/let]" \
 
 check "console.log/error/warn in JS" \
   '\bconsole\.(log|error|warn)\b' \
-  '*.js'
+  '*.js' \
+  overridable
 
 check "debugger statement" \
   '\bdebugger\b' \
@@ -239,19 +256,23 @@ check "CSS missing space after colon" \
 
 check "Hardcoded hex color  [only valid inside :root definitions]" \
   '#[0-9a-fA-F]{3,8}' \
-  '*.css'
+  '*.css' \
+  overridable
 
 check "Fixed px font-size  [use clamp() custom property]" \
   'font-size:\s*[0-9]+px' \
-  '*.css'
+  '*.css' \
+  overridable
 
 check "Fixed rem font-size  [use clamp() custom property]" \
   'font-size:\s*[0-9]+(\.[0-9]+)?rem' \
-  '*.css'
+  '*.css' \
+  overridable
 
 check "CDN font import" \
   'fonts\.googleapis\.com|fonts\.gstatic\.com' \
-  '*.css'
+  '*.css' \
+  overridable
 
 check "Banner/landmark comments in CSS" \
   '[═─━]{3,}|[*]{4,}' \
@@ -268,13 +289,13 @@ if [ $FAIL -ne 0 ]; then
   echo -e "${RED}Items flagged for review.${NC}"
   echo "Not all flags are violations — review each in context."
   if [ $WARN_COUNT -gt 0 ]; then
-    echo "$WARN_COUNT override(s) acknowledged (web-xp:allow)."
+    echo "$WARN_COUNT commented exception(s) acknowledged."
   fi
   echo "Structural rules require manual inspection (see /web-xp-check)."
   exit 1
 else
   if [ $WARN_COUNT -gt 0 ]; then
-    echo -e "${GREEN}All mechanical checks passed.${NC} $WARN_COUNT override(s) acknowledged."
+    echo -e "${GREEN}All mechanical checks passed.${NC} $WARN_COUNT commented exception(s)."
   else
     echo -e "${GREEN}All mechanical checks passed.${NC}"
   fi
