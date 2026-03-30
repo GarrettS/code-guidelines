@@ -8,9 +8,6 @@ The system has three layers, each independent:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  Orchestration (optional)                       │
-│  smux · tmux-bridge · role assignment            │
-├─────────────────────────────────────────────────┤
 │  Agent Adapters                                 │
 │  adapters/claude · adapters/codex · ...         │
 ├─────────────────────────────────────────────────┤
@@ -22,7 +19,6 @@ The system has three layers, each independent:
 
 **Core** is the standard. It has no opinion about which agent runs it.
 **Adapters** teach a specific agent how to load, check, review, and apply the standard. The adapter list is open — anyone can add one for their platform.
-**Orchestration** coordinates multiple agents in different roles. It depends on adapters but adapters do not depend on it.
 
 ---
 
@@ -91,7 +87,7 @@ The agent reviewing code against the standard.
 
 These capabilities are administrative — used during project setup, not during the code/audit loop:
 
-- **Bootstrap** — set up a new project with contract and pre-commit script
+- **Bootstrap** — set up a new project with a contract file
 - **Toggle enforcement** — switch between off and always-on
 
 In single-agent mode, the same agent handles setup and runtime. In multi-agent mode, setup is a human decision made before agents start working.
@@ -100,7 +96,7 @@ In single-agent mode, the same agent handles setup and runtime. In multi-agent m
 
 ## Orchestration Topologies
 
-Three topologies. Only the first works without smux.
+Three topologies. Only the first is implemented. The others are planned and depend on smux (not yet built).
 
 ### Single-agent (default)
 
@@ -195,10 +191,10 @@ All adapters point at the same core files. They do not duplicate the standard �
 ### Existing adapters
 
 **Claude** (implemented — `.claude/skills/web-xp*`):
-Seven skills covering all capabilities above. Project contract: `CLAUDE.md`. Skills are authored in `.claude/skills/` — the platform-native discovery path for Claude Code.
+Seven native skills covering all capabilities above. Project contract: `CLAUDE.md`, built from shared `AGENT.md` + Claude overlay. Skills are authored in `.claude/skills/` — the platform-native discovery path for Claude Code.
 
-**Codex** (to build — `adapters/codex/`):
-Same capability set. Skill format and project contract mechanism TBD during implementation.
+**Codex** (implemented — `adapters/codex/`):
+Capability spec files and convention-based contract (`CODEX.md`). Built from shared `AGENT.md` + Codex overlay.
 
 ### Building a new adapter
 
@@ -211,9 +207,9 @@ To add Web XP support for another agent platform:
 
 The adapter does not need to implement orchestration. That is a separate layer.
 
-### Orchestration layer (smux)
+### Orchestration layer (planned — not yet implemented)
 
-Not an adapter — a coordination layer on top of adapters. Provides:
+smux integration is planned but not built. When implemented, it would provide:
 
 - Role assignment: which pane is coder, which is auditor
 - Message routing: findings from auditor → coder via `tmux-bridge message`
@@ -226,17 +222,19 @@ Depends on at least one agent adapter being installed. Does not modify core Web 
 
 ## Repo Structure
 
-Core Web XP lives at the repo root. Adapter documentation and packaging live under `adapters/<platform>/`. Some adapters may also keep authored files in a platform-native path when the platform expects it (e.g. Claude skills in `.claude/skills/`). Orchestration integrations live under `orchestration/`.
+Core Web XP lives at the repo root. Adapter documentation and packaging live under `adapters/<platform>/`. Some adapters may also keep authored files in a platform-native path when the platform expects it (e.g. Claude skills in `.claude/skills/`).
 
 ```
 web-xp/
+├── AGENT.md                    # shared build source (version pin, session/commit directives)
 ├── code-guidelines.md          # core standard
 ├── code-philosophy.md          # core explanatory context
 ├── bin/
 │   ├── pre-commit-check.sh     # core mechanical checks
+│   ├── build-contracts.sh      # builds agent contracts from AGENT.md + overlays
 │   └── check-web-xp-sync.sh    # internal sync (this repo only)
 ├── .claude/
-│   └── skills/                 # Claude adapter (authored here — platform-native path)
+│   └── skills/                 # Claude adapter skills (platform-native path)
 │       ├── web-xp/
 │       ├── web-xp-check/
 │       ├── web-xp-apply/
@@ -245,10 +243,10 @@ web-xp/
 │       ├── web-xp-on/
 │       └── web-xp-off/
 ├── adapters/
-│   ├── claude/                 # Claude adapter docs and install instructions
-│   └── codex/                  # Codex adapter (to build)
-├── orchestration/              # smux layer (to build)
-│   └── smux/
+│   ├── claude/                 # Claude overlay, built contract, docs
+│   └── codex/                  # Codex overlay, built contract, spec files, docs
+├── test/
+│   └── test-pre-commit.sh      # regression tests for pre-commit checks
 ├── CLAUDE.md                   # this repo's own contract
 ├── DESIGN.md                   # this file
 └── README.md                   # public docs
@@ -258,11 +256,11 @@ web-xp/
 
 ## Build Order
 
-1. **Formalize enforcement modes** — document the three-state model (`off | explicit | always-on`) in skill descriptions and docs. The current `/web-xp-on` and `/web-xp-off` commands stay as-is — they toggle between `off` and `always-on`. `explicit` is the natural state before any project contract is created and does not need a command. Update skill descriptions to use the state names consistently.
-2. **Add adapter scaffolding** — create `adapters/claude/` with a README documenting the Claude adapter (install path, skill list, contract mechanism). No file moves — `.claude/skills/` stays as the authored source. Create `adapters/codex/` placeholder.
-3. **Build second adapter** — port the capabilities to another agent platform (Codex is the current candidate) to validate the adapter interface. This is the first real test of agent-agnosticism.
-4. **Rewrite public docs** — README says "Web XP supports multiple coding agents" with per-adapter install instructions and a "Building a new adapter" section.
+1. ~~**Formalize enforcement modes**~~ — done.
+2. ~~**Add adapter scaffolding**~~ — done.
+3. ~~**Build second adapter (Codex)**~~ — done. Tested against elitefuellabs.com.
+4. ~~**Rewrite public docs**~~ — done. README is agent-neutral.
 5. **Build smux orchestration layer** — role assignment, topology selection, message routing. Optional install on top of any adapter combination.
 6. **Continuous audit mode** — timer-driven auditor topology using smux or equivalent.
 
-Steps 1-2 are housekeeping. Step 3 is the first real deliverable — it validates the interface. Step 5 depends on having at least two working adapters.
+Steps 1-4 complete. Step 5 depends on a stable install/contract model, which is now in place.

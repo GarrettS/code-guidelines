@@ -128,9 +128,6 @@ Web XP has three layers, each independent:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  Orchestration (optional)                       │
-│  smux · tmux-bridge · role assignment            │
-├─────────────────────────────────────────────────┤
 │  Agent Adapters                                 │
 │  Claude · Codex · ...                           │
 ├─────────────────────────────────────────────────┤
@@ -142,9 +139,8 @@ Web XP has three layers, each independent:
 
 **Core** is the standard. It has no opinion about which agent runs it.
 **Adapters** teach a specific agent how to use the standard. The adapter list is open. Some adapters keep authored files in a platform-native path (e.g. Claude skills in `.claude/skills/`); adapter documentation lives in `adapters/<platform>/`.
-**Orchestration** coordinates multiple agents in different roles. Optional.
 
-See `DESIGN.md` for the full architecture, role definitions, and orchestration topologies.
+See `DESIGN.md` for the full architecture and role definitions.
 
 ## Building a New Adapter
 
