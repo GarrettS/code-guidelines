@@ -5,5 +5,8 @@ agent-handoff/codex-to-claude.md
 # Local settings
 .claude/settings.local.json
 
+# dev-relay state
+.dev-relay/
+
 # Working docs not for distribution
 /CODEX-PROMPT.md
