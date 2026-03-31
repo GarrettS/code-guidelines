@@ -1,143 +1,202 @@
-# Orchestration — Design Notes
+# Orchestration
 
-Design artifact capturing orchestration needs observed during Web XP development. Not implemented. If this becomes a real project, it likely lives outside this repo.
+This document defines the **product-level orchestration problem**.
 
----
+It does **not** describe how Claude and Codex coordinate while building Web XP. That contributor workflow belongs in a separate document.
 
-## The Problem
+## Scope
 
-Multi-agent development workflows today run on manual relay. In the current Web XP workflow:
+Orchestration means defining and running multi-step workflows with explicit order, dependency, failure behavior, and approval boundaries.
 
-- Claude writes code and checks its own work
-- Codex reviews via file-based handoff (inbox/outbox markdown files)
-- The human polls, relays, reminds agents to check messages
-- There is no task ordering, no automatic handoff, no retry logic
+Examples:
 
-This works but is fragile. The human is the scheduler, the router, and the error handler.
-
-## What We Have Today
-
-### Tasks
-
-| Task | Type | Interface |
-|------|------|-----------|
-| `pre-commit-check.sh` | Script | Exit 0/1, stdout findings |
-| `/web-xp-check` (Claude) | Agent skill | Reads diff, reports findings |
-| `web-xp-check.md` (Codex) | Agent spec | Same behavior, different invocation |
-| `/web-xp-review` | Agent skill/spec | Reviews arbitrary code |
-| `/web-xp-apply` | Agent skill/spec | Applies fixes with approval |
-
-### Communication
-
-| Mechanism | What it does | Limitation |
-|-----------|-------------|------------|
-| `agent-handoff/` files | Async message passing between agents | No notification — requires polling or manual relay |
-| `AGENT-HANDOFF.md` | Human-readable contract for file-based handoff workflow | Agents can't self-invoke |
-| Contract files (`CLAUDE.md`, `CODEX.md`) | Session directives | Read once at session start, not reactive |
-
-### What's missing
-
-- **Task ordering**: no way to say "run A, then B, then C"
-- **Conditional flow**: no way to say "if review fails, loop back to code"
-- **Agent handoff**: no way to say "when Claude finishes, hand to Codex"
-- **Subtask delegation**: no way to say "Codex, spawn a Qwen task for testing"
-- **Notification**: agents can't wake each other — the human has to relay
-
-## Orchestration Patterns Observed
-
-### Linear chain
-
-```
-eslint → web-xp mechanical check → web-xp structural review → deploy
+```text
+plan -> code -> review -> test -> deploy
 ```
 
-Exists today as manual sequences in contract files. Works if one agent does everything.
-
-### Back-and-forth review
-
-```
-Claude: code → Codex: review → Claude: fix → Codex: re-review
-```
-
-This is what we did during the Codex adapter development. Ran on manual file handoff and human relay. The protocol (inbox/outbox) handled the format; the human handled the scheduling.
-
-### Subtask delegation
-
-```
-Codex: document → Qwen: test (subtask) → Codex: integrate results
+```text
+target A
+target B depends on A
+target C depends on A
+target D depends on B and C
 ```
 
-Not attempted yet. Would require one agent to invoke another, which no current mechanism supports without the human.
+The core problem is not "how do two agents message each other." The core problem is "how do we define and execute a workflow correctly."
 
-### Plan-driven workflow
+## What This System Must Do
 
-```
-Claude: plan → Claude: code → Codex: review + doc → Qwen: test
-```
+An orchestration system must be able to answer, unambiguously:
 
-A graph, not a chain. Some steps are sequential, some are parallel, some loop.
+- What tasks exist?
+- What does each task require?
+- What does each task produce?
+- What depends on what?
+- What can run in parallel?
+- What happens on failure?
+- Where is human approval required?
+- What state is observable while the workflow is running?
 
-## What a Solution Would Look Like
+If a design cannot answer those clearly, it is not an orchestration design yet.
 
-### Task interface
+## Design Goals
 
-Every task — script or agent — has the same minimal interface:
+- Define workflows in a machine-readable form
+- Support dependency ordering and parallelism
+- Support conditional flow and failure handling
+- Support human approval gates
+- Support agent-backed and script-backed tasks
+- Keep run state inspectable
+- Avoid coupling workflow semantics to one transport or one agent platform
 
-- **Input**: working directory, optional scope (files, diff)
-- **Output**: exit code (0 = pass, nonzero = fail), stdout for findings
-- **Control**: caller decides whether failure stops the chain
+## Non-Goals
 
-### Composition primitives
+- Solving contributor handoff while building Web XP
+- Requiring tmux as the runtime
+- Treating transport as the orchestration model
+- Folding Web XP core rules into the runner
+- Building a full distributed-systems platform
 
-- **Sequence**: run A then B
-- **Conditional**: if A fails, run B instead of C
-- **Loop**: run A and B until B passes
-- **Parallel**: run A and B simultaneously
-- **Delegation**: A spawns B as a subtask (crosses actor boundaries, not just task boundaries)
+## Core Concepts
 
-### What runs it
+### Task
 
-Options, from simple to complex:
+A unit of work.
 
-1. **Shell script**: sequences tasks manually. Works for linear chains.
-2. **Agent contract**: the "Before every commit" section is already a task list. The agent is the runner.
-3. **Declarative config**: a YAML/JSON file defining the task graph. Needs a runner to interpret it.
-4. **Workflow engine**: Temporal, Airflow-style. Overkill for this context.
-5. **smux**: tmux-based agent coordination. Handles the "notification" problem — agents in panes can message each other via `tmux-bridge`.
+Examples:
+- run a script
+- ask an agent to review a diff
+- apply a patch
+- run tests
 
-### Where existing tools cover
+### Target
 
-| Tool | Covers | Doesn't cover |
-|------|--------|---------------|
-| Make | Task ordering, dependency graphs | Agent invocation, loops, handoff |
-| CI (GitHub Actions) | Sequence, parallel, conditional | Agent sessions, interactive approval |
-| Shell scripts | Sequence, conditional | Agent communication, subtasks |
-| smux/tmux-bridge | Agent messaging, pane management | Task ordering, failure handling |
-| Agent contracts | Session directives, task lists | Cross-agent coordination, loops |
+A named workflow node composed of one or more tasks and explicit dependencies.
 
-The gap is at the intersection: task ordering + agent communication + failure handling.
+### Dependency
 
-## Scope Question
+A rule that says one target cannot start until another has completed successfully, or has produced specific required output.
 
-This is bigger than Web XP. Web XP is one task provider. The orchestration system would serve any multi-agent, multi-tool workflow.
+### Runner
 
-If built, it should be a separate project that Web XP plugs into — not a feature of Web XP.
+The component that evaluates the workflow definition and decides what to run next.
 
-## What Web XP Should Do Now
+### Approval gate
 
-1. Be a good task citizen: clean interfaces, documented exit semantics
-2. Document task composition examples in README
-3. Keep the file-based handoff protocol as the current agent communication layer
-4. Not build an orchestration engine
+A point in the workflow where execution pauses until a human authorizes continuation.
 
-## If This Becomes a Project
+### Transport
 
-It would need:
+The mechanism used to notify or wake an actor once work is ready.
 
-- A task definition format (what to run, what it needs, what it produces)
-- A composition format (task graph definition)
-- A runner (interprets the graph, invokes tasks, handles failure)
-- Agent integration (invoke agents, wait for results, relay findings)
-- Notification (wake agents when their input is ready)
+Transport matters, but transport is not the workflow definition.
 
-That's a real project, not a feature.
+## Minimal Architecture
+
+Any serious orchestration design will need at least these pieces:
+
+1. **Workflow definition**
+   A structured format describing tasks, targets, dependencies, and policy
+2. **Runner**
+   Reads the definition, executes the graph, and tracks state
+3. **Task adapters**
+   Invoke concrete work units such as scripts, checks, or agents
+4. **Approval handling**
+   Pause, surface context, and resume after human decision
+5. **Run state**
+   Observable status, logs, outputs, and failure reasons
+6. **Transport**
+   Optional wakeup/notification mechanism for interactive actors
+
+Without the first two items, there is no orchestration system yet.
+
+## Relationship To Web XP
+
+Web XP is not the orchestration model.
+
+Web XP may participate in an orchestration system as:
+
+- a standards provider
+- a task provider
+- a set of agent adapters
+- a source of checks and review behaviors
+
+That means:
+
+- Web XP core should stay focused on standards and adapter contracts
+- orchestration should be designed as its own layer
+- the layering decision may still be "inside this repo," "adjacent project," or "separate project"
+
+That placement question is open. The architectural separation is not.
+
+## Task Interface Requirements
+
+To participate in orchestration, a task should expose a minimal contract:
+
+- input context
+- execution target
+- success or failure result
+- machine-readable status when possible
+- human-readable findings when relevant
+
+Different task types may expose richer interfaces, but the runner needs a stable minimum.
+
+## Policy Requirements
+
+A workflow definition needs to express at least:
+
+- sequence
+- parallel execution
+- conditional branches
+- retry or stop behavior
+- approval checkpoints
+- failure propagation
+
+These are workflow semantics. They should not be inferred from tmux behavior, chat prompts, or ad hoc terminal conventions.
+
+## Transport Position
+
+Transport is a supporting concern.
+
+Possible transports include:
+
+- tmux-based pane messaging
+- file watchers
+- hooks
+- agent-native notification mechanisms
+
+Those may help interactive tasks wake up, but they do not replace:
+
+- workflow definition
+- dependency modeling
+- execution policy
+- run-state tracking
+
+## Constraints
+
+- Some tasks are interactive, some are not
+- Some tasks are agent-backed, some are plain scripts
+- Human approval must remain available where required
+- Observability matters; hidden state is not acceptable
+- The system should not assume one agent vendor or one terminal runtime
+
+## Open Questions
+
+1. What is the minimal workflow definition format worth supporting first?
+2. Is the primary abstraction `task`, `target`, or both?
+3. How much run state must be machine-readable in v1?
+4. Which approval semantics are required in the first usable version?
+5. What belongs in Web XP proper versus an adjacent orchestration layer?
+
+## Short Version
+
+Orchestration is the product problem of defining and executing workflows correctly.
+
+It is about:
+
+- workflow definition
+- dependency execution
+- approval gates
+- failure policy
+- run-state visibility
+
+It is not just agent wakeup, pane messaging, or contributor coordination.

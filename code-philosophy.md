@@ -114,6 +114,18 @@ No `useEffect`. No dependency array. No cleanup return. The function runs once, 
 
 TypeScript is a separate tradeoff, not the same discussion as frameworks. Its value is real: it catches a class of bugs before runtime. Its cost is also real: a build step, more surface area, and type machinery that can obscure intent or drift from runtime behavior at the edges. AI review now catches many of the same failures TypeScript was adopted to catch: bad signatures, null hazards, naming drift, and type confusion. The doctrine's naming rules and Fail-Safe principle address them through disciplined design and review. That makes TypeScript increasingly optional rather than foundational. Projects written in TypeScript still benefit from this doctrine fully. The doctrine does not depend on TypeScript. Treat it as a project-level overlay decision, not a prerequisite for code quality.
 
+## Avoid Lock-In
+
+We like tools that serve our projects without forcing us to reshape how we do things.
+
+This is not just a tooling preference. It is an architectural requirement. A project should be able to adopt a tool, benefit from it, and later remove it without structural damage, migration pain, or loss of code clarity. When a framework or runner becomes a shaping force inside the project, the code stops being plainly owned by the team and starts being organized around the framework's worldview.
+
+That problem gets worse with AI tools. Every framework-specific file, helper, convention, and abstraction in the codebase biases the AI toward generating more of the same. The AI does not evaluate whether the framework is the right abstraction; it pattern-matches on what it sees and produces consistent output. This turns accumulated framework code into a gravity well: the framework shapes the code, the code shapes the context, the context shapes the AI output, and the AI output reinforces the framework. It strengthens the sunk-cost dynamic that already discourages migration.
+
+Web XP was designed around this principle. Its core contract is canonical and adapter-agnostic. Teams can switch between agents like Claude and Codex without restructuring the project. Other agents such as Cursor, OpenCode, and Gemini can be added by deriving from `AGENT.md`. It can be dropped instantly with zero migration cost: no `web-xp` files or folders in your project, and no hooks in your code. You own your code.
+
+Migration cost is not an abstract future concern; it is wasted time, wasted energy, and distorted code. A good tool can disappear and leave behind healthy code. A bad tool leaves behind ruins.
+
 ## The Market Reality
 
 The volume of framework-heavy, AI-generated, nobody-reviewed code is growing. Developers who cannot distinguish a for loop from a DFS are churning out large applications built on the worst practices, compounding the existing mass of bloated framework code. This will produce spectacular failures.
