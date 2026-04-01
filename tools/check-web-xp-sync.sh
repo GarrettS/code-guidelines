@@ -2,7 +2,7 @@
 # Internal maintainer tooling in the Web XP checkout (`~/.web-xp`).
 # Not copied into consuming project repos.
 # Syncs canonical root standards files → local `.claude/skills/` copies
-# with DO NOT EDIT headers for repo-local Claude development.
+# with DO NOT EDIT headers for repo-local Claude development only.
 #
 # Direction: root → .claude/skills/, never the reverse.
 # Root copies are canonical for these files. Edits to the

@@ -230,7 +230,8 @@ web-xp/
 ├── code-guidelines.md          # core standard
 ├── code-philosophy.md          # core explanatory context
 ├── bin/
-│   ├── pre-commit-check.sh     # core mechanical checks
+│   └── pre-commit-check.sh     # core mechanical checks
+├── tools/
 │   ├── build-contracts.sh      # builds agent contracts from AGENT.md + overlays
 │   └── check-web-xp-sync.sh    # internal sync (this repo only)
 ├── .claude/

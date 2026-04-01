@@ -59,8 +59,8 @@ That checkout includes:
 - adapter files and built contract templates
 - maintainer/build tooling used inside the Web XP checkout itself
 
-Maintainer scripts such as `bin/build-contracts.sh` and
-`bin/check-web-xp-sync.sh` live in `~/.web-xp`, but are not copied into the
+Maintainer scripts such as `tools/build-contracts.sh` and
+`tools/check-web-xp-sync.sh` live in `~/.web-xp`, but are not copied into the
 user's application project.
 
 ## Agent Support
@@ -198,9 +198,9 @@ Each agent's project contract is built from two sources:
 1. **`AGENT.md`** — the shared base contract. Project-level rules that apply to every agent regardless of platform.
 2. **`adapters/<agent>/overlay.md`** — agent-specific contract additions (platform config, invocation style, discovery paths).
 
-`bin/build-contracts.sh` concatenates them to produce the built contract (e.g. `CLAUDE.example.md`, `CODEX.example.md`). Projects copy the built contract as their `CLAUDE.md` or `CODEX.md`.
+`tools/build-contracts.sh` concatenates them to produce the built contract (e.g. `CLAUDE.example.md`, `CODEX.example.md`). Projects copy the built contract as their `CLAUDE.md` or `CODEX.md`.
 
-From `bin/build-contracts.sh`:
+From `tools/build-contracts.sh`:
 
 ```bash
 # Because the build is plain concatenation (cat), anything in AGENT.md

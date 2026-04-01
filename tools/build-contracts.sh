@@ -2,7 +2,15 @@
 # Builds agent-specific contract files from shared AGENT.md
 # + per-adapter overlays.
 #
-# Usage: bash bin/build-contracts.sh
+# AGENT.md is the shared base contract — project-level rules that apply
+# to every agent. This script concatenates it with each adapter's
+# overlay.md to produce a built contract (e.g. CLAUDE.example.md).
+# Because the build is plain concatenation (cat), anything in AGENT.md
+# or overlay.md appears verbatim in the output. Do not put maintainer
+# comments, build-chain docs, or internal notes in those files —
+# they will leak into emitted project contracts.
+#
+# Usage: bash tools/build-contracts.sh
 
 set -euo pipefail
 
