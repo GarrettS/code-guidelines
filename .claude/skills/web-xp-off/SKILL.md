@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-off/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp-off
 description: "Disable Web XP enforcement in CLAUDE.md. Activate when: 'turn off web-xp', 'disable standards', 'pause enforcement', 'web-xp off', 'skip web-xp'."

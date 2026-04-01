@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-init/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp-init
 description: "Set up a project with Web XP standards. Trigger: 'set up project', 'initialize', 'create CLAUDE.md', 'add pre-commit', 'init web-xp'."

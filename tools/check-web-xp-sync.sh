@@ -61,6 +61,14 @@ copy_if_changed() {
   fi
 }
 
+inject_skill_header() {
+  local src="$1" skill_name="$2"
+
+  printf '<!-- DO NOT EDIT — canonical source is /adapters/claude/%s/SKILL.md.\n' "$skill_name"
+  printf '     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->\n\n'
+  cat "$src"
+}
+
 for pair in "${STANDARD_PAIRS[@]}"; do
   IFS=':' read -r REL_SRC REL_DEST STYLE <<< "$pair"
   SRC="${REPO_ROOT}/${REL_SRC}"
@@ -77,7 +85,13 @@ done
 for skill_name in "${SKILL_NAMES[@]}"; do
   SRC="${REPO_ROOT}/adapters/claude/${skill_name}/SKILL.md"
   DEST="${REPO_ROOT}/.claude/skills/${skill_name}/SKILL.md"
-  copy_if_changed "$SRC" "$DEST"
+  INJECTED="$(inject_skill_header "$SRC" "$skill_name")"
+  if [ "$(cat "$DEST" 2>/dev/null)" != "$INJECTED" ]; then
+    mkdir -p "$(dirname "$DEST")"
+    printf '%s\n' "$INJECTED" > "$DEST"
+    git add "$DEST"
+    SYNCED=$((SYNCED + 1))
+  fi
 done
 
 if [ "$SYNCED" -gt 0 ]; then

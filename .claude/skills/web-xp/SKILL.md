@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp
 description: "Load code-guidelines.md and code-philosophy.md as session constraints. Activate when: coding task begins, 'web-xp', 'web xp', 'code guidelines', 'standards', writing or reviewing JS/HTML/CSS."

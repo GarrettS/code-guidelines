@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-review/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp-review
 description: "Review code against Web XP standards. Activate when: code pasted or file given, 'review this', 'what's wrong with this', evaluate quality, vanilla equivalent."

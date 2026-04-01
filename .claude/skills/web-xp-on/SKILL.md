@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-on/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp-on
 description: "Enable Web XP enforcement in CLAUDE.md. Activate when: 'turn on web-xp', 'enable standards', 'activate enforcement', 'web-xp on', 're-enable'."

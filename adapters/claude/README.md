@@ -17,6 +17,16 @@ Implemented. This is the reference adapter.
 
 Claude skill source is authored in `adapters/claude/`. The repo-local `.claude/skills/` tree is generated/local packaging output for Claude Code's platform-native discovery path.
 
+The source files intentionally use runtime-relative paths such as
+`${CLAUDE_SKILL_DIR}/../code-guidelines.md`. Those paths resolve in the
+generated runtime/package layout under `.claude/skills/`, where the sync script
+physically co-locates the skill files, standards files, and pre-commit script.
+They do not resolve from the source location under `adapters/claude/`.
+
+Do not replace the generated `.claude/skills/` files with symlinks. The install
+uses `cp -r`, and symlink-based layouts break under that copy model. The sync
+script exists to maintain physical copies in the runtime/package path.
+
 | Skill | Role | Purpose |
 |-------|------|---------|
 | `web-xp` | both | Load constraints |
@@ -46,6 +56,9 @@ git clone https://github.com/GarrettS/web-xp.git ~/.web-xp
 mkdir -p ~/.claude/skills
 cp -r ~/.web-xp/.claude/skills/* ~/.claude/skills/
 ```
+
+The install copies from the generated `.claude/skills/` packaging output in the
+Web XP checkout.
 
 Then in each project:
 

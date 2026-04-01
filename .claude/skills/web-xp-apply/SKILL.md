@@ -1,3 +1,6 @@
+<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-apply/SKILL.md.
+     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
+
 ---
 name: web-xp-apply
 description: "Fix Web XP violations interactively with approval. Activate when: 'fix these', 'apply suggestions', 'refactor against standards', 'walk me through fixes'."
