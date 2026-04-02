@@ -179,12 +179,12 @@ For Claude Code, also remove the copied runtime files from `~/.claude/skills/` i
 
 ## Architecture
 
-Web XP has two main parts:
+The standard is one thing. The packaging is per-agent. Web XP uses an adapter pattern so the same seven skills work the same way regardless of which agent runs them — Claude, Codex, or whatever comes next. Because the standard is vendor-agnostic, teams can mix agents, swap agents, or have agents review each other's work without changing the methodology.
 
-- **Core Web XP**: `code-guidelines.md`, `code-philosophy.md`, and `bin/pre-commit-check.sh`
-- **Agent adapters**: Claude, Codex, and future agents that apply the same standard in different packaging formats
+- **Core**: the doctrine (`code-guidelines.md`, `code-philosophy.md`) and a mechanical pre-commit check (`bin/pre-commit-check.sh`). Agent-agnostic.
+- **Adapters**: each agent gets its own packaging under `adapters/<platform>/`. The build generates platform-native paths (like `.claude/skills/`) from that source.
 
-Authored adapter files live under `adapters/<platform>/`. Platform-native runtime/package paths such as `.claude/skills/` are generated from that source as needed.
+Adding a new agent means writing one adapter. The standard doesn't change.
 
 See `DESIGN.md` for the full architecture.
 

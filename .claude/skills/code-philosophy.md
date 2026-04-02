@@ -184,35 +184,7 @@ For one entity such as `left-ilium`, the same meaningful token appears across re
 - `anat-left-ilium-hitbox`
 - `anat-left-ilium-btn`
 
-The role changes. The domain key does not. That is the point of Shared Key: identity is explicit, derivable, and greppable instead of being translated through framework-owned structures.
-
-### Eager vs Lazy Init
-
-Shared Key pairs with event delegation. The key is parsed from the event target's ID and used for O(1) lookup. The difference is when the pool is populated:
-
-| Strategy | Pool | Trigger | When to use |
-|---|---|---|---|
-| **Eager** | Built at load time from data | Delegation parses key from target ID → `map[id]` | Full set needed upfront (quiz, shuffle, filter) |
-| **Lazy** | Empty; `get(id)` creates on first access | Delegation triggers create-or-retrieve | Many possible instances, few touched (tabs, tree nodes, scrollable panels) |
-
-**Eager** — `anatomize.js`: JSON loads at init, keyed by structure ID. Delegated handlers parse the key from the target via regex and look up both sides in one step:
-
-```javascript
-const s = state.structures[id];          // data: O(1)
-const el = document.getElementById('anat-' + id); // DOM: O(1)
-```
-
-**Lazy** — `navigation-tabs.js`: pool starts empty. Lazy init happens once, on demand — tab activation via delegation triggers `lazyInit(key)`:
-
-```javascript
-function lazyInit(key) {
-  if (initialized.has(key)) return;
-  const entry = LAZY_INIT[key];
-  if (!entry) return;
-  initialized.add(key);
-  import(entry.path).then((m) => m.init());
-}
-```
+The role changes. The domain key does not. A meaningful, human-readable ID — named from the project's ubiquitous language — is the universal coordinate across JS dispatch, DOM lookup, and CSS styling. See it in the inspector, find it in the code, know what it represents. No translation layer to hide bugs.
 
 ## Good Names
 

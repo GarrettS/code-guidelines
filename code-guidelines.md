@@ -198,12 +198,41 @@ For exclusive-active state (tabs, selections, panels): hold a reference to the c
 When a data record and a DOM element represent the same entity, give them the same `id`. This single key indexes both — data by object property, DOM by `getElementById`, dispatch table by action route. Do not search either collection for a known key. This is the keyed form of [Minimize Traversal Scope](#minimize-traversal-scope): when the key is known, address directly instead of searching.
 
 - **Data format**: structure JSON as a keyed object (`{"item-foo": {...}}`) instead of an array of objects with `id` fields (`[{"id": "foo", ...}]`). When data is looked up by key, the source format should be keyed — no runtime indexing step needed.
-- **Module ownership**: modules that generate IDs use a prefix or parameterized name to keep them unique. Dynamic elements use prefix + index (e.g. `order-item-0`, `search-result-3`). Widgets that can have multiple instances (resize bar, drag handle, calendar) take an ID parameter from the caller — each instance gets a unique ID derived from that parameter (e.g. `salon-calendar`, `deliveries-calendar`). Two elements with the same ID is a bug. Framework-era advice to avoid `id` attributes does not apply here — see `code-philosophy.md` §Shared Key.
+- **Module ownership**: use meaningful, human-readable `id` attributes named from the project's ubiquitous language. The same identifier should be visible in the inspector, searchable in the code, and understandable in context. Module-owned prefixes or caller-provided IDs keep those identifiers unique. Dynamic elements use prefix + index (e.g. `order-item-0`, `search-result-3`). Widgets that can have multiple instances (resize bar, drag handle, calendar) take an ID parameter from the caller — each instance gets a unique ID derived from that parameter (e.g. `salon-calendar`, `deliveries-calendar`). Two elements with the same ID is a bug.
 - **DOM side**: use the namespaced key as the element's `id` attribute. Lookup is `getElementById(id)`. Related elements use convention-based suffixes (e.g. `id + "-detail"`), each directly addressable.
 - **One key across all layers**: the same string appears in JSON keys, element `id` attributes, SVG element `id` attributes, and JS lookups. No translation between layers.
 - **Access pattern (getById)**: event delegation derives the key from the target element's `id`, then addresses both data (`map[id]`) and DOM (`getElementById(id)`) directly. When construction is expensive, use create-on-first-access: `pool[id] || (pool[id] = create(id))`.
 - **Antipattern**: `.find(item => item.id === id)`, `querySelector('[data-id="' + id + '"]')` — linear scans for a known key.
 - **ID or class, not both.** When an element is a singleton addressed by `getElementById`, do not also give it a class that serves the same selector role. An `id` already uniquely selects the element in both CSS and JS. A class that duplicates it is a second name for the same thing — two selectors to maintain, two names a reader must reconcile.
+
+#### Eager vs Lazy Init
+
+Shared Key pairs with event delegation. The key is parsed from the event target's ID and used for O(1) lookup. The difference is when the pool is populated:
+
+| Strategy | Pool | Trigger | When to use |
+|---|---|---|---|
+| **Eager** | Built at load time from data | Delegation parses key from target ID → `map[id]` | Full set needed upfront (quiz, shuffle, filter) |
+| **Lazy** | Empty; created on first access | Delegation triggers create-or-retrieve | Many possible instances, few touched (tabs, tree nodes, scrollable panels) |
+
+**Eager** — `anatomize.js`: JSON loads at init, keyed by structure ID. Delegated handlers parse the key from the target via regex and look up both sides in one step:
+
+```javascript
+const s = state.structures[id];          // data: O(1)
+const el = document.getElementById('anat-' + id); // DOM: O(1)
+```
+
+**Lazy** — `navigation-tabs.js`: pool starts empty. Lazy init happens once, on demand — tab activation via delegation triggers `lazyInit(key)`:
+
+```javascript
+function lazyInit(key) {
+  if (initialized.has(key)) return;
+
+  const entry = LAZY_INIT[key];
+  if (!entry) return;
+  initialized.add(key);
+  import(entry.path).then((m) => m.init());
+}
+```
 
 ### Ancestor Class for Batch Styles
 
