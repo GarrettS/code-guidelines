@@ -27,6 +27,7 @@ directories in `adapters/claude/`.
 | `web-xp-init.md` | setup | Bootstrap project |
 | `web-xp-on.md` | setup | Enable always-on enforcement |
 | `web-xp-off.md` | setup | Disable enforcement |
+| `web-xp-remove` | setup | Remove Web XP from project |
 
 ## Install
 
@@ -36,10 +37,30 @@ Web XP is installed once per user, not per project.
 git clone https://github.com/GarrettS/web-xp.git ~/.web-xp
 ```
 
-Then in each project:
+Install also copies the Codex bootstrap skill to `~/.codex/skills/web-xp-init/`.
+
+Then in each project, inside Codex:
+
+```text
+web-xp-init
+```
+
+Shell fallback:
 
 ```bash
-cp ~/.web-xp/adapters/codex/CODEX.example.md CODEX.md
+~/.web-xp/bin/web-xp-init codex
+```
+
+To remove Web XP from the current project inside Codex:
+
+```text
+web-xp-remove
+```
+
+Shell fallback:
+
+```bash
+~/.web-xp/bin/web-xp-remove codex
 ```
 
 To update:

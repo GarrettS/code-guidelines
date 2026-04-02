@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Project cleanup command for Web XP.
+# Removes managed project contract blocks or files.
+
+set -euo pipefail
+
+BEGIN_MARKER='<!-- BEGIN WEB-XP: managed block. Edit outside this block. Changes inside may be replaced by Web XP commands. -->'
+END_MARKER='<!-- END WEB-XP -->'
+
+usage() {
+  cat <<'EOF'
+Usage: web-xp-remove [claude|codex|all]
+
+Remove Web XP project contract footprints in the current directory.
+
+Defaults to `all`, which removes Web XP from both `CLAUDE.md` and `CODEX.md`.
+EOF
+}
+
+remove_block_or_file() {
+  local contract="$1"
+
+  if [ ! -f "$contract" ]; then
+    echo "no $contract"
+    return
+  fi
+
+  if ! grep -Fq "$BEGIN_MARKER" "$contract"; then
+    echo "no managed block in $contract"
+    return
+  fi
+
+  local tmp
+  tmp="$(mktemp)"
+
+  awk -v begin="$BEGIN_MARKER" -v end="$END_MARKER" '
+    $0 == begin { in_block=1; next }
+    $0 == end && in_block { in_block=0; next }
+    !in_block { print }
+  ' "$contract" > "$tmp"
+
+  # Trim leading and trailing blank lines after block removal.
+  perl -0pi -e 's/\A(?:\s*\n)+//; s/(?:\n\s*)+\z/\n/s' "$tmp"
+
+  if [ ! -s "$tmp" ] || ! grep -q '[^[:space:]]' "$tmp"; then
+    rm -f "$contract" "$tmp"
+    echo "removed $contract"
+    return
+  fi
+
+  mv "$tmp" "$contract"
+  echo "removed managed block from $contract"
+}
+
+mode="${1:-all}"
+
+case "$mode" in
+  all)
+    remove_block_or_file "CLAUDE.md"
+    remove_block_or_file "CODEX.md"
+    ;;
+  claude)
+    remove_block_or_file "CLAUDE.md"
+    ;;
+  codex)
+    remove_block_or_file "CODEX.md"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac

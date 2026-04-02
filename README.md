@@ -50,17 +50,30 @@ git -C ~/.web-xp pull && ~/.web-xp/bin/install.sh
 In a project, run:
 
 ```text
-/web-xp-init
+~/.web-xp/bin/web-xp-init
 ```
 
-That creates or updates the Web XP-managed block in `CLAUDE.md`.
+That creates or updates the project contracts for both agents:
+
+- `CLAUDE.md`
+- `CODEX.md`
+
+Inside Claude Code, `/web-xp-init` still creates or updates `CLAUDE.md` directly.
 
 ### Codex
 
-In a project, create a `CODEX.md` contract from the Web XP template:
+In Codex, run:
+
+```text
+web-xp-init
+```
+
+That creates or updates `CODEX.md` in the current project.
+
+If you need to bootstrap outside Codex, the shell fallback is:
 
 ```bash
-cp ~/.web-xp/adapters/codex/CODEX.example.md CODEX.md
+~/.web-xp/bin/web-xp-init codex
 ```
 
 Then point Codex to `CODEX.md` when starting a session.
@@ -101,6 +114,7 @@ Web XP provides seven Agent Skills across adapters.
 | `web-xp-init` | Set up or update a project contract |
 | `web-xp-on` | Enable always-on enforcement |
 | `web-xp-off` | Disable enforcement |
+| `web-xp-remove` | Remove Web XP from the current project |
 
 How each Agent Skill is invoked depends on the agent:
 
@@ -127,6 +141,7 @@ Claude runtime/package install (`~/.claude/skills/`):
 Codex runtime/package install:
 
 - Codex reads the flat spec files directly from `~/.web-xp/adapters/codex/`
+- install also copies the `web-xp-init` Codex skill to `~/.codex/skills/web-xp-init/`
 
 Project footprint:
 
@@ -140,6 +155,30 @@ Current behavior:
 - if the contract file already exists, `web-xp-init` inserts or replaces the Web XP-managed block and leaves surrounding content alone
 - if the existing managed block has drift, `web-xp-init` warns and replaces it
 - `web-xp-on` and `web-xp-off` toggle the Web XP directives inside the managed block only
+
+## Project Overlay
+
+Web XP's standards are canonical. Project-specific decisions such as directory structure, asset strategy, content authority, typography, and viewport floor live in a separate **project overlay** file, not in a fork of the standards.
+
+A project overlay is your project's own file — for example `prd/project.md`. It states what the project is and records the decisions that belong to that project rather than to Web XP itself. The [PRI Pelvis Restoration study tool](https://github.com/GarrettS/pelvis) uses `prd/project.md` as its overlay:
+
+```
+## Code Standards
+This project follows Web XP, installed at ~/.web-xp/:
+- ~/.web-xp/code-guidelines.md — what the code looks like
+- ~/.web-xp/code-philosophy.md — why the standards are structured this way
+
+This file (project.md) is the project overlay. Project-specific
+decisions live here, not in a fork of the standards.
+```
+
+The overlay covers things like:
+- directory layout and asset rules
+- content authority (which source wins when data conflicts)
+- key architecture decisions (routing strategy, data format, service worker placement)
+- design references (style guides, PRDs, feature specs)
+
+Currently the overlay is documentation — the agent reads it only if told to. Runtime integration via `/web-xp overrides=path/to/file.md` is planned ([#9](https://github.com/GarrettS/web-xp/issues/9)). Until then, add a note to your project contract (`CLAUDE.md` or `CODEX.md`) outside the managed block pointing the agent to your overlay file.
 
 ## Update, Disable, and Remove
 
@@ -162,10 +201,13 @@ Re-enable it with `web-xp-on`.
 
 ### Remove From a Project
 
-Current project removal is manual:
+Project removal:
 
-- remove the Web XP-managed block from `CLAUDE.md` or `CODEX.md`
-- if the file exists only for Web XP, remove the file
+```bash
+~/.web-xp/bin/web-xp-remove
+```
+
+That removes the Web XP-managed block from `CLAUDE.md` and `CODEX.md` in the current project, and deletes either file if it only contains Web XP.
 
 ### Remove From Your System
 
@@ -181,35 +223,45 @@ For Claude Code, also remove the copied runtime files from `~/.claude/skills/` i
 
 The standard is one thing. The packaging is per-agent. Web XP uses an adapter pattern so the same seven skills work the same way regardless of which agent runs them — Claude, Codex, or whatever comes next. Because the standard is vendor-agnostic, teams can mix agents, swap agents, or have agents review each other's work without changing the methodology.
 
-- **Core**: the doctrine (`code-guidelines.md`, `code-philosophy.md`) and a mechanical pre-commit check (`bin/pre-commit-check.sh`). Agent-agnostic.
-- **Adapters**: each agent gets its own packaging under `adapters/<platform>/`. The build generates platform-native paths (like `.claude/skills/`) from that source.
+### How it fits together
 
-Adding a new agent means writing one adapter. The standard doesn't change.
+```
+~/.web-xp/                          ← system install (git clone + install.sh)
+├── code-guidelines.md              ← the doctrine
+├── code-philosophy.md              ← why the doctrine works
+├── bin/pre-commit-check.sh         ← mechanical checks
+├── adapters/claude/                ← Claude skill source + overlay
+│   └── CLAUDE.example.md           ← built template
+└── adapters/codex/                 ← Codex spec files + overlay
+    └── CODEX.example.md            ← built template
 
-See `DESIGN.md` for the full architecture.
+~/.claude/skills/                   ← Claude runtime (install.sh copies here)
 
-### Project Contracts
+your-project/
+├── CLAUDE.md or CODEX.md           ← /web-xp-init creates this from the template
+└── prd/project.md (optional)       ← your project overlay
+```
 
-Each built project contract comes from two sources:
+**System install** (`git clone + install.sh`): clones `~/.web-xp`, copies Claude skills to `~/.claude/skills/`, and installs the Codex `web-xp-init` skill to `~/.codex/skills/web-xp-init/`. The shell bootstrap fallback remains available at `~/.web-xp/bin/web-xp-init`.
 
-1. `AGENT.md` — the shared base contract
-2. `adapters/<agent>/overlay.md` — agent-specific additions
+**Project setup**:
+- **Shell fallback**: `~/.web-xp/bin/web-xp-init` creates or updates `CLAUDE.md` and `CODEX.md` from the built templates.
+- **Claude**: `/web-xp-init` creates or updates `CLAUDE.md` with the Web XP-managed block.
+- **Codex**: `web-xp-init` creates or updates `CODEX.md`, then Codex reads that project contract.
 
-`tools/build-contracts.sh` builds the emitted templates (for example `CLAUDE.example.md` and `CODEX.example.md`) from those sources.
+**Project cleanup**:
+- **Shell fallback**: `~/.web-xp/bin/web-xp-remove` removes Web XP from `CLAUDE.md` and `CODEX.md`.
+- **Claude**: `/web-xp-remove` removes Web XP from `CLAUDE.md`.
+- **Codex**: `web-xp-remove` removes Web XP from `CODEX.md`.
 
-## Adapter Details
+**Built templates** (`CLAUDE.example.md`, `CODEX.example.md`) are generated from `AGENT.md` plus per-agent overlays. Maintainer-facing build details live in `DESIGN.md`.
 
-Claude Code:
+Adding a new agent means writing one adapter. The standard doesn't change. See `DESIGN.md` for the fuller architecture and maintainer build flow.
 
-- native skill directories in `.claude/skills/`
-- project contract in `CLAUDE.md`
-- see `adapters/claude/README.md`
+### Adapter details
 
-Codex:
-
-- flat spec files in `adapters/codex/`
-- project contract in `CODEX.md`
-- see `adapters/codex/README.md`
+- **Claude Code**: skill directories in `adapters/claude/`, packaged to `~/.claude/skills/`. See `adapters/claude/README.md`.
+- **Codex**: flat spec files in `adapters/codex/`, read directly from `~/.web-xp`. See `adapters/codex/README.md`.
 
 ## Building a New Adapter
 

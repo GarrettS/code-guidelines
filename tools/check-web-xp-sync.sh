@@ -29,6 +29,7 @@ SKILL_NAMES=(
   "web-xp-init"
   "web-xp-on"
   "web-xp-off"
+  "web-xp-remove"
 )
 
 SYNCED=0

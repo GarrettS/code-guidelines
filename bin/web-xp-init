@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# Project bootstrap command for Web XP.
+# Creates or updates project contract files from built templates.
+
+set -euo pipefail
+
+WEB_XP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+BEGIN_MARKER='<!-- BEGIN WEB-XP: managed block. Edit outside this block. Changes inside may be replaced by Web XP commands. -->'
+END_MARKER='<!-- END WEB-XP -->'
+
+usage() {
+  cat <<'EOF'
+Usage: web-xp-init [claude|codex|all]
+
+Bootstrap Web XP project contracts in the current directory.
+
+Defaults to `all`, which creates or updates both `CLAUDE.md` and `CODEX.md`.
+EOF
+}
+
+extract_block() {
+  local file="$1"
+  awk -v begin="$BEGIN_MARKER" -v end="$END_MARKER" '
+    $0 == begin { in_block=1 }
+    in_block { print }
+    $0 == end && in_block { exit }
+  ' "$file"
+}
+
+replace_block() {
+  local file="$1"
+  local template="$2"
+  local tmp
+  tmp="$(mktemp)"
+
+  awk -v template="$template" -v begin="$BEGIN_MARKER" -v end="$END_MARKER" '
+    BEGIN {
+      while ((getline line < template) > 0) {
+        repl = repl line ORS
+      }
+      close(template)
+    }
+    $0 == begin && !done {
+      printf "%s", repl
+      in_block=1
+      done=1
+      next
+    }
+    $0 == end && in_block {
+      in_block=0
+      next
+    }
+    !in_block { print }
+  ' "$file" > "$tmp"
+
+  mv "$tmp" "$file"
+}
+
+prepend_block() {
+  local file="$1"
+  local template="$2"
+  local tmp
+  tmp="$(mktemp)"
+  cat "$template" > "$tmp"
+  printf '\n' >> "$tmp"
+  cat "$file" >> "$tmp"
+  mv "$tmp" "$file"
+}
+
+update_contract() {
+  local template="$1"
+  local contract="$2"
+
+  if [ ! -f "$contract" ]; then
+    cp "$template" "$contract"
+    echo "created $contract"
+    return
+  fi
+
+  if ! grep -Fq "$BEGIN_MARKER" "$contract"; then
+    prepend_block "$contract" "$template"
+    echo "prepended managed block to $contract"
+    return
+  fi
+
+  local current_block
+  current_block="$(extract_block "$contract")"
+  local template_block
+  template_block="$(cat "$template")"
+
+  if [ "$current_block" != "$template_block" ]; then
+    echo "warning: replacing drifted Web XP managed block in $contract" >&2
+  fi
+
+  replace_block "$contract" "$template"
+  echo "updated managed block in $contract"
+}
+
+mode="${1:-all}"
+
+case "$mode" in
+  all)
+    update_contract "$WEB_XP_DIR/adapters/claude/CLAUDE.example.md" "CLAUDE.md"
+    update_contract "$WEB_XP_DIR/adapters/codex/CODEX.example.md" "CODEX.md"
+    ;;
+  claude)
+    update_contract "$WEB_XP_DIR/adapters/claude/CLAUDE.example.md" "CLAUDE.md"
+    ;;
+  codex)
+    update_contract "$WEB_XP_DIR/adapters/codex/CODEX.example.md" "CODEX.md"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac

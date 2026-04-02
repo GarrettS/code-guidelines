@@ -52,7 +52,7 @@ echo ok'
 mkdir -p "$CASE_DIR/tools"
 cp "$SYNC_SCRIPT" "$CASE_DIR/tools/check-web-xp-sync.sh"
 
-for skill_name in web-xp web-xp-check web-xp-review web-xp-apply web-xp-init web-xp-on web-xp-off; do
+for skill_name in web-xp web-xp-check web-xp-review web-xp-apply web-xp-init web-xp-on web-xp-off web-xp-remove; do
   write_file "adapters/claude/${skill_name}/SKILL.md" "---
 name: ${skill_name}
 description: test

@@ -36,6 +36,7 @@ script exists to maintain physical copies in the runtime/package path.
 | `web-xp-init` | setup | Bootstrap project |
 | `web-xp-on` | setup | Enable always-on enforcement |
 | `web-xp-off` | setup | Disable enforcement |
+| `web-xp-remove` | setup | Remove Web XP from project |
 
 ## Project contract
 
