@@ -168,11 +168,51 @@ The Shared Key pattern uses a unique `id` as a single-token address across every
 
 Frameworks handle identity indirectly because their rendering model changes the DOM ownership boundary. This doctrine keeps the developer in direct control of DOM identity.
 
-| Layer | Implementation | Doctrine |
-|---|---|---|
-| JS | `CLICK_DISPATCH['prefix-id']` | O(1) Dispatch |
-| DOM | `id="prefix-id-3"` | Namespaced Address |
-| CSS | `.anatomize-label`, `.equiv-opt` | Module-prefixed classes |
+In the pelvis app's `anatomize.js`, the shared domain key is the anatomy token embedded in each role-specific ID:
+
+```javascript
+const RE_IMG_ID = /^anat-img-(.+)$/;
+const RE_LABEL_ID = /^anat-(.+)-label$/;
+const RE_HITBOX_ID = /^anat-(.+)-hitbox$/;
+const RE_BTN_ID = /^anat-(.+)-btn$/;
+```
+
+For one entity such as `left-ilium`, the same meaningful token appears across related elements:
+
+- `anat-img-left-ilium`
+- `anat-left-ilium-label`
+- `anat-left-ilium-hitbox`
+- `anat-left-ilium-btn`
+
+The role changes. The domain key does not. That is the point of Shared Key: identity is explicit, derivable, and greppable instead of being translated through framework-owned structures.
+
+### Eager vs Lazy Init
+
+Shared Key pairs with event delegation. The key is parsed from the event target's ID and used for O(1) lookup. The difference is when the pool is populated:
+
+| Strategy | Pool | Trigger | When to use |
+|---|---|---|---|
+| **Eager** | Built at load time from data | Delegation parses key from target ID → `map[id]` | Full set needed upfront (quiz, shuffle, filter) |
+| **Lazy** | Empty; `get(id)` creates on first access | Delegation triggers create-or-retrieve | Many possible instances, few touched (tabs, tree nodes, scrollable panels) |
+
+**Eager** — `anatomize.js`: JSON loads at init, keyed by structure ID. Delegated handlers parse the key from the target via regex and look up both sides in one step:
+
+```javascript
+const s = state.structures[id];          // data: O(1)
+const el = document.getElementById('anat-' + id); // DOM: O(1)
+```
+
+**Lazy** — `navigation-tabs.js`: pool starts empty. Lazy init happens once, on demand — tab activation via delegation triggers `lazyInit(key)`:
+
+```javascript
+function lazyInit(key) {
+  if (initialized.has(key)) return;
+  const entry = LAZY_INIT[key];
+  if (!entry) return;
+  initialized.add(key);
+  import(entry.path).then((m) => m.init());
+}
+```
 
 ## Good Names
 
