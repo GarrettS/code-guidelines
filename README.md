@@ -212,7 +212,9 @@ For Claude Code, also remove the copied runtime files from `~/.claude/skills/` i
 
 ## Architecture
 
-The standard is one thing. The packaging is per-agent. Web XP uses an adapter pattern so the same seven skills work the same way regardless of which agent runs them — Claude, Codex, or whatever comes next. Because the standard is vendor-agnostic, teams can mix agents, swap agents, or have agents review each other's work without changing the methodology.
+Web XP uses an adapter pattern: one standard, nearly the same interface across agents. Claude uses `/web-xp-check`, Codex uses `web-xp-check` — the behavior and output differ, but the skills are the same.
+
+Each agent does things differently. This creates interesting workflow possibilities: swap agents for different tasks, use one agent to review another's work, or fall back to a different agent when one is down — all under the same standard.
 
 ### How it fits together
 
