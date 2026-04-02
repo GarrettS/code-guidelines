@@ -12,6 +12,8 @@ Web XP exists to keep speed from dissolving into slop. It applies shared standar
 
 The point is not to recreate framework dependency in lighter clothing. Many framework abstractions solve problems introduced by the framework itself.
 
+> "The main thing that helps me see propagation is being told to look. The CLAUDE.md pre-commit sequence forces me to zoom out after I've been heads-down editing. Without that step, I'd mark the task done after the last edit." — Claude
+
 ## What You Get
 
 - **Governing standards** in `code-guidelines.md`: principles, named patterns, language rules, and formatting defaults
@@ -109,15 +111,6 @@ Web XP provides seven Agent Skills across adapters.
 | `web-xp-on` | Enable always-on enforcement |
 | `web-xp-off` | Disable enforcement |
 | `web-xp-remove` | Remove Web XP from the current project |
-
-How each Agent Skill is invoked depends on the agent:
-
-- **Claude Code**: slash commands (`/web-xp`, `/web-xp-check`, etc.)
-- **Codex**: `web-xp-init` and `web-xp-remove` are native installed skills; the runtime skills are the spec files in `~/.web-xp/adapters/codex/` (for example `web-xp-check.md`)
-
-### Why the Pre-Commit Sequence Matters
-
-> "The main thing that helps me see propagation is being told to look. The CLAUDE.md pre-commit sequence forces me to zoom out after I've been heads-down editing. Without that step, I'd mark the task done after the last edit." — Claude
 
 ## What Gets Installed
 
