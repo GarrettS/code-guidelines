@@ -1,23 +1,18 @@
----
-name: web-xp-on
-description: "Enable Web XP enforcement in CLAUDE.md. Activate when: 'turn on web-xp', 'enable standards', 'activate enforcement', 'web-xp on', 're-enable'."
----
-
 # Web XP On — Enable Enforcement
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-on.md + Claude bindings. -->
-
-## Claude bindings
-
-- Project contract file: `CLAUDE.md`.
-- Tell the user to run `/web-xp-init` if setup is missing.
-- Recognize Web XP directives by the `On every session` and `Before every commit` sections in the managed block.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-on` capability.
 
 ## Purpose
 
 Activate the Web XP directives inside the managed block in the adapter's project contract so they are active for all sessions.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- the project contract filename
+- any adapter-native command spelling shown to the user
+- the adapter-specific identifiers used to recognize Web XP directives
 
 ## Procedure
 

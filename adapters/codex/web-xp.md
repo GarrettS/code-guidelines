@@ -1,8 +1,28 @@
 # Web XP — Load Session Constraints
 
-Read `code-guidelines.md` and `code-philosophy.md` from your Web XP install. Apply the following as constraints for all code written or reviewed in this session.
+<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp.md + Codex bindings. -->
 
-## Design Principles
+## Codex bindings
+
+- Read `~/.web-xp/code-guidelines.md`.
+- Read `~/.web-xp/code-philosophy.md`.
+- Treat this file name, `web-xp.md`, as the Codex capability surface.
+
+## Shared capability
+
+## Purpose
+
+Load the Web XP standard into the current session before writing or reviewing code.
+
+## Procedure
+
+1. Read `code-guidelines.md`.
+2. Read `code-philosophy.md`.
+3. Apply the standard as constraints for the rest of the session.
+
+## Working summary
+
+### Design Principles
 
 - **Fail-Safe** — every failure resolves to a defined safe outcome. No unhandled exceptions, no silent failure paths.
 - **Ubiquitous Language** — variables, class names, CSS selectors, function names use domain terms, not programmer shorthand.
@@ -11,17 +31,17 @@ Read `code-guidelines.md` and `code-philosophy.md` from your Web XP install. App
 - **DOM-Light** — favor source HTML over JS-generated markup. Use native elements first.
 - **Design Tokens** — repeated CSS values are custom properties on `:root`, named by role.
 
-## Patterns
+### Patterns
 
 Event Delegation, Active Object, Shared Key, Ancestor Class, Dispatch Table, CSS over JS, `hidden` attribute, Extract Shared Logic, Template and cloneNode, Decompose Conditional.
 
-For full pattern definitions, read `code-guidelines.md` from your Web XP install. For reasoning and examples, read `code-philosophy.md`.
+For full pattern definitions, read `code-guidelines.md`. For reasoning and examples, read `code-philosophy.md`.
 
-## For this session
+## Session behavior
 
-- Evaluate all code written or reviewed against these constraints
-- Flag violations by pattern name
-- When proposing code, follow the patterns
-- Use `code-philosophy.md` to explain reasoning, not to invent rules
-- When the standards conflict with a request, state the tension and ask
-- On commit, remind to run pre-commit checks
+- Evaluate all code written or reviewed against these constraints.
+- Flag violations by pattern name.
+- When proposing code, follow the patterns.
+- Use `code-philosophy.md` to explain reasoning, not to invent rules.
+- When the standards conflict with a request, state the tension and ask.
+- Before commit, remind the user to run the adapter's Web XP pre-commit check path.

@@ -1,23 +1,18 @@
----
-name: web-xp-check
-description: "Audit git diff against Web XP standard patterns. Activate when: about to commit, 'check my code', 'audit', 'pre-commit', 'review the diff', verifying quality."
----
-<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-check/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Check — Read-Only Audit
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-check.md + Claude bindings. -->
-
-## Claude bindings
-
-- Run `bin/pre-commit-check.sh` if it exists in the project; otherwise run `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh`.
-- Refer users to `/web-xp-review` for arbitrary files outside git diff review.
-- Use Claude slash-command names in user-facing examples.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-check` capability.
 
 ## Purpose
 
 Audit the current diff against the Web XP standards. Report findings. Do not edit files.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- how to run the pre-commit check
+- how to refer to the review command for arbitrary files
+- any adapter-native invocation syntax in user-facing examples
 
 ## Procedure
 

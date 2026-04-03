@@ -5,23 +5,28 @@ description: "Remove Web XP from this Claude project by deleting the managed blo
 <!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-remove/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Remove — Project Cleanup
 
-Remove Web XP from the current project for Claude.
+<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-remove.md + Claude bindings. -->
+
+## Claude bindings
+
+- Project contract file: `CLAUDE.md`.
+- Delegate to `~/.web-xp/bin/web-xp-remove claude`.
+
+## Shared capability
+
+## Purpose
+
+Remove Web XP from the current project for the concrete adapter.
 
 ## Procedure
 
 ### 1. Verify Web XP is installed
 
-Check that `~/.web-xp/` exists. If it does not exist, report: "Web XP is not installed at `~/.web-xp`." and stop.
+Check that `~/.web-xp/` exists. If it does not, report that Web XP is not installed and stop.
 
 ### 2. Delegate to the canonical cleanup script
 
-Run:
-
-```bash
-~/.web-xp/bin/web-xp-remove claude
-```
-
-That script is the canonical implementation for removing the Web XP-managed block from the project-local `CLAUDE.md` contract, or removing the file entirely if it only contains Web XP.
+Run the adapter's canonical cleanup script entrypoint. Do not reimplement the project contract mutation logic in this capability.
 
 ### 3. Report
 

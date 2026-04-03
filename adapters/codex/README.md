@@ -4,17 +4,18 @@ Web XP adapter for Codex. Implements the adapter interface as flat spec files an
 
 ## Status
 
-Initial implementation. Prompt/spec files define each Web XP operation for Codex. If Codex gains a formal skill packaging system, these files become the source material for that packaging.
+Initial implementation. Prompt/spec files define each Web XP operation for Codex. They are built artifacts, not the canonical authored skill source.
 
 ## How it works
 
 1. `adapters/shared-base/AGENT.md` is the shared base contract — version pin, session directives, pre-commit sequence.
 2. `overlay.md` (in this adapter) adds Codex-specific config such as the spec directory.
 3. The install builds `CODEX.md` from `adapters/shared-base/AGENT.md` + `overlay.md`. Projects get one file.
-4. One spec file per Web XP operation defines what each operation does.
+4. `tools/build-adapter-skills.sh` builds the concrete Codex spec files in this adapter from `adapters/shared-base/skills/` + Codex bindings.
+5. One built spec file per Web XP operation defines what each operation does.
 
 These flat `.md` spec files are the Codex equivalents of the Claude skill
-directories in `adapters/claude/`.
+directories in `adapters/claude/`. Both are built from `adapters/shared-base/skills/`.
 
 ## Spec Files
 

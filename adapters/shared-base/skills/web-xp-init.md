@@ -1,24 +1,19 @@
----
-name: web-xp-init
-description: "Set up or update a project with Web XP standards. Trigger: 'set up project', 'initialize', 'create CLAUDE.md', 'update CLAUDE.md', 'add pre-commit', 'init web-xp'."
----
-<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-init/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Init — Project Setup
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-init.md + Claude bindings. -->
-
-## Claude bindings
-
-- Project contract file: `CLAUDE.md`.
-- Missing install message: `Install Web XP first: git clone https://github.com/GarrettS/web-xp.git ~/.web-xp && ~/.web-xp/bin/install.sh`
-- Delegate to `~/.web-xp/bin/web-xp-init claude`.
-- Claude does not require a preview-first flow in this build.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-init` capability.
 
 ## Purpose
 
 Set up or update a project to use Web XP.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- the project contract filename
+- the install command to show when Web XP is missing
+- the canonical shell bootstrap command, if the adapter delegates to it
+- whether the adapter requires preview before write
 
 ## Procedure
 

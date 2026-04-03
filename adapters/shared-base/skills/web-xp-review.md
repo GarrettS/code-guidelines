@@ -1,23 +1,18 @@
----
-name: web-xp-review
-description: "Review code against Web XP standards. Activate when: code pasted or file given, 'review this', 'what's wrong with this', evaluate quality, vanilla equivalent."
----
-<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-review/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Review — Evaluate Any Code Against the Standards
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-review.md + Claude bindings. -->
-
-## Claude bindings
-
-- Read `${CLAUDE_SKILL_DIR}/../code-guidelines.md`.
-- Read `${CLAUDE_SKILL_DIR}/../code-philosophy.md`.
-- Use Claude slash-command names when referencing related capabilities.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-review` capability.
 
 ## Purpose
 
 Review code the user provides against the Web XP standards. Unlike `web-xp-check`, this works on any code from any source.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- the path to `code-guidelines.md`
+- the path to `code-philosophy.md`
+- any adapter-native invocation wording when referencing related capabilities
 
 ## Procedure
 

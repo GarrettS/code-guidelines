@@ -1,23 +1,18 @@
----
-name: web-xp-apply
-description: "Fix Web XP violations interactively with approval. Activate when: 'fix these', 'apply suggestions', 'refactor against standards', 'walk me through fixes'."
----
-<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-apply/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Apply — Interactive Guided Fixes
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-apply.md + Claude bindings. -->
-
-## Claude bindings
-
-- If findings are missing, run `/web-xp-check` first.
-- Make edits using Claude's normal editing tools.
-- Run `bin/pre-commit-check.sh` if it exists in the project; otherwise run `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh` after approved edits.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-apply` capability.
 
 ## Purpose
 
 Walk through `web-xp-check` findings and apply them with human approval.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- how to invoke or reference `web-xp-check`
+- how edits are performed in that adapter
+- how to run the Web XP pre-commit check
 
 ## Procedure
 

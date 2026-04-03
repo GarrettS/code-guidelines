@@ -3,43 +3,52 @@ name: web-xp-init
 description: Create or update a project's CODEX.md contract for Web XP. Trigger when the user says "web-xp-init", asks to initialize Web XP in a Codex project, create CODEX.md, or update the Web XP project contract.
 ---
 
-# Web XP Init — Codex Project Setup
+# Web XP Init — Project Setup
 
-Set up or update the current project to use Web XP with Codex.
+<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-init.md + Codex bindings. -->
+
+## Codex bindings
+
+- Project contract file: `CODEX.md`.
+- Missing install message: `Install Web XP first: git clone https://github.com/GarrettS/web-xp.git ~/.web-xp && ~/.web-xp/bin/install.sh`
+- Preview first with `~/.web-xp/bin/web-xp-init --preview codex`.
+- Ask for confirmation before write.
+- On approval, delegate to `~/.web-xp/bin/web-xp-init codex`.
+
+## Shared capability
+
+## Purpose
+
+Set up or update a project to use Web XP.
 
 ## Procedure
 
 ### 1. Verify Web XP is installed
 
-Check that `~/.web-xp/` exists. If it does not exist, report: "Install Web XP first: `git clone https://github.com/GarrettS/web-xp.git ~/.web-xp && ~/.web-xp/bin/install.sh`" and stop.
+Check that `~/.web-xp/` exists. If it does not, tell the user how to install Web XP and stop.
 
-### 2. Preview the CODEX.md change first
+### 2. Create or update the project contract
 
-Run:
+Use this Web XP-managed block:
 
-```bash
-~/.web-xp/bin/web-xp-init --preview codex
+```md
+<!-- BEGIN WEB-XP: managed block. Edit outside this block. Changes inside may be replaced by Web XP commands. -->
+...
+<!-- END WEB-XP -->
 ```
 
-Show the proposed `CODEX.md` diff to the user. Treat that diff as the preview of the managed block addition or update.
+If the concrete adapter delegates to the canonical shell bootstrap script, use that script rather than reimplementing the file mutation logic.
 
-### 3. Ask for confirmation
+If the contract file does not exist, create it from the adapter's built contract template.
 
-Ask a short yes/no question before writing:
+If the contract file already exists:
 
-- yes: apply the change
-- no: stop without modifying files
+- if the managed block is missing, prepend the built contract block to the file
+- if the managed block exists, replace that block with the current built contract block
+- if the existing block differs from the current built contract block, warn that changes inside the managed block will be replaced, then replace it
 
-### 4. Delegate to the canonical bootstrap script
+Never modify content outside the Web XP-managed block.
 
-If the user confirms, run:
+### 3. Report
 
-```bash
-~/.web-xp/bin/web-xp-init codex
-```
-
-That script is the canonical implementation for creating or updating the project-local `CODEX.md` contract. Do not reimplement the bootstrap logic in this skill.
-
-### 5. Report
-
-Summarize what the script created or updated.
+Summarize what was created or updated, and whether the managed block was replaced.

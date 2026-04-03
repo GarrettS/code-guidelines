@@ -11,11 +11,12 @@ Implemented. This is the reference adapter.
 1. `adapters/shared-base/AGENT.md` is the shared base contract — version pin, session directives, pre-commit sequence.
 2. `overlay.md` (in this adapter) adds Claude-specific config: slash commands.
 3. `tools/build-contracts.sh` builds `CLAUDE.example.md` from `adapters/shared-base/AGENT.md` + `overlay.md`. Projects copy the built output.
-4. Claude skill source in this adapter is synced into `.claude/skills/` for local development and install packaging.
+4. `tools/build-adapter-skills.sh` builds the concrete Claude skill files in this adapter from `adapters/shared-base/skills/` + Claude bindings.
+5. Those built files are then synced into `.claude/skills/` for local development and install packaging.
 
 ## Where the skills live
 
-Claude skill source is authored in `adapters/claude/`. The repo-local `.claude/skills/` tree is generated/local packaging output for Claude Code's platform-native discovery path.
+Claude skill behavior is authored in `adapters/shared-base/skills/` and emitted as concrete Claude skill files under `adapters/claude/`. The repo-local `.claude/skills/` tree is generated/local packaging output for Claude Code's platform-native discovery path.
 
 The source files intentionally use runtime-relative paths such as
 `${CLAUDE_SKILL_DIR}/../code-guidelines.md`. Those paths resolve in the

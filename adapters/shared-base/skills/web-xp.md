@@ -1,23 +1,18 @@
----
-name: web-xp
-description: "Load code-guidelines.md and code-philosophy.md as session constraints. Activate when: coding task begins, 'web-xp', 'web xp', 'code guidelines', 'standards', writing or reviewing JS/HTML/CSS."
----
-
 # Web XP — Load Session Constraints
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp.md + Claude bindings. -->
-
-## Claude bindings
-
-- Read `${CLAUDE_SKILL_DIR}/../code-guidelines.md`.
-- Read `${CLAUDE_SKILL_DIR}/../code-philosophy.md`.
-- Treat `/web-xp` as the Claude capability surface.
-
-## Shared capability
+Adapter-neutral source for the `web-xp` capability.
 
 ## Purpose
 
 Load the Web XP standard into the current session before writing or reviewing code.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- the path to `code-guidelines.md`
+- the path to `code-philosophy.md`
+- any adapter-native activation wording or command name
 
 ## Procedure
 

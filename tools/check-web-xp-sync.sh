@@ -11,7 +11,13 @@
 # Direction: canonical source → `.claude/skills/`, never the reverse.
 # Edits to `.claude/skills/` copies will be silently overwritten by this sync.
 
+set -euo pipefail
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Rebuild concrete adapter packaging first so shared-base skill edits propagate
+# through adapters/claude before sync copies them into `.claude/skills/`.
+bash "$REPO_ROOT/tools/build-adapter-skills.sh"
 
 # source:destination:comment-style
 # md = HTML comment, sh = shell comment

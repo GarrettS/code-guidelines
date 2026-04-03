@@ -1,22 +1,18 @@
----
-name: web-xp-off
-description: "Disable Web XP enforcement in CLAUDE.md. Activate when: 'turn off web-xp', 'disable standards', 'pause enforcement', 'web-xp off', 'skip web-xp'."
----
-<!-- DO NOT EDIT — canonical source is /adapters/claude/web-xp-off/SKILL.md.     This copy is auto-synced by the pre-commit hook. Edits here will be overwritten. -->
 # Web XP Off — Disable Enforcement
 
-<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-off.md + Claude bindings. -->
-
-## Claude bindings
-
-- Project contract file: `CLAUDE.md`.
-- Recognize Web XP directives by the `On every session` and `Before every commit` sections in the managed block.
-
-## Shared capability
+Adapter-neutral source for the `web-xp-off` capability.
 
 ## Purpose
 
 Comment out the Web XP directives inside the managed block in the adapter's project contract so they are inactive for all sessions.
+
+## Adapter bindings
+
+The concrete adapter wrapper must provide:
+
+- the project contract filename
+- any adapter-native command spelling shown to the user
+- the adapter-specific identifiers used to recognize Web XP directives
 
 ## Procedure
 

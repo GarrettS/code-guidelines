@@ -5,50 +5,64 @@ description: "Fix Web XP violations interactively with approval. Activate when: 
 
 # Web XP Apply — Interactive Guided Fixes
 
-Walk through web-xp-check findings and apply them with human approval, grouping repeated similar edits when they form one coherent change.
+<!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-apply.md + Claude bindings. -->
+
+## Claude bindings
+
+- If findings are missing, run `/web-xp-check` first.
+- Make edits using Claude's normal editing tools.
+- Run `bin/pre-commit-check.sh` if it exists in the project; otherwise run `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh` after approved edits.
+
+## Shared capability
+
+## Purpose
+
+Walk through `web-xp-check` findings and apply them with human approval.
 
 ## Procedure
 
 ### 1. Get findings
 
-If a web-xp-check was already run in this conversation, use those findings. Otherwise, run `/web-xp-check` first to generate the finding list.
+If a `web-xp-check` was already run in this conversation, use those findings. Otherwise, run it first.
 
 ### 2. Present one coherent change at a time
 
 Default to one finding at a time, but group findings when they are the same kind of edit in the same file or tightly related scope.
 
 Examples that should be grouped into one approval:
-- Repeated camelCase-to-kebab-case or prefix renames in one file
-- Repeated class/ID renames caused by one naming correction
-- Repeated mechanical replacements of the same anti-pattern in one module
+
+- repeated renames in one file caused by one naming correction
+- repeated class or ID renames caused by one correction
+- repeated mechanical replacements of the same anti-pattern in one module
 
 Examples that should stay separate:
-- Distinct structural refactors in different files
-- Changes that affect different Web XP patterns
-- Any edit where grouping would make the proposal harder to review
+
+- distinct structural refactors in different files
+- changes affecting different Web XP patterns
+- any edit where grouping would make the proposal harder to review
 
 For each proposed change set, present:
-- The file and line number(s)
-- The pattern name and whether it is a violation or opportunity
-- The current code (quote the relevant lines)
-- The proposed change (show the replacement code)
-- A one-sentence Web XP rationale
 
-Then ask: "Apply this change? (yes / no / skip)"
+- file and line number(s)
+- pattern name and whether it is a violation or opportunity
+- current code
+- proposed replacement
+- one-sentence Web XP rationale
+
+Then ask: `Apply this change? (yes / no / skip)`
 
 ### 3. Apply on approval
 
-- On **yes**: make the edit using the Edit tool. Verify the edit was applied correctly.
-- On **no** or **skip**: move to the next finding without editing.
-- Group repeated similar edits into one approval when they form a coherent review unit.
-- Do not batch unrelated or structurally distinct edits together.
-- Never edit without explicit approval for that specific change.
+- `yes`: make the edit and verify it was applied correctly
+- `no` or `skip`: move to the next finding
+- never edit without explicit approval for that specific change
 
 ### 4. After all findings
 
-Report a summary: how many findings were applied, skipped, and declined.
+Report how many findings were applied, skipped, and declined.
 
 If any edits were made:
-- Clean up after each edit: remove CSS selectors, IDs, classes, and variables that the refactor made unreferenced.
-- Run the pre-commit script (`bin/pre-commit-check.sh` if it exists in the project, otherwise `bash ${CLAUDE_SKILL_DIR}/../pre-commit-check.sh`) to verify no mechanical violations were introduced.
-- Review the changed JS for correctness — confirm no broken references, missing arguments, or changed behavior.
+
+- remove selectors, IDs, classes, and variables made unreferenced by the refactor
+- run the adapter's Web XP pre-commit check command
+- review changed JS for correctness: no broken references, missing arguments, or changed behavior
