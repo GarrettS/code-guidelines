@@ -123,25 +123,24 @@ Session skills are for evaluating Web XP or for one-off code checks. They load t
 
 Web XP's standards are canonical. Project-specific decisions such as directory structure, asset strategy, content authority, typography, and viewport floor live in a separate **project overlay** file, not in a fork of the standards.
 
-A project overlay is your project's own file — for example `prd/project.md`. It states what the project is and records the decisions that belong to that project rather than to Web XP itself. The [PRI Pelvis Restoration study tool](https://github.com/GarrettS/pelvis) uses `prd/project.md` as its overlay:
+A project overlay is your project's own file — for example `prd/project.md`. It records the decisions that belong to that project, and its rules cascade over the standard's defaults. The [PRI Pelvis Restoration study tool](https://github.com/GarrettS/pelvis) uses `prd/project.md` as its overlay:
 
 ```
-## Code Standards
-This project follows Web XP, installed at ~/.web-xp/:
-- ~/.web-xp/code-guidelines.md — what the code looks like
-- ~/.web-xp/code-philosophy.md — why the standards are structured this way
+## Content Authority
+- Pelvis Restoration 2026 Complete Manual.md — authoritative for all
+  PRI content. If app data contradicts the manual, the manual wins.
 
-This file (project.md) is the project overlay. Project-specific
-decisions live here, not in a fork of the standards.
+## Key Decisions
+- Hash-based SPA navigation (location.hash + hashchange). No History API.
+- JSON data files in data/.
+- sw.js lives at project root (browser scope constraint).
 ```
 
 The overlay covers things like:
-- directory layout and asset rules
 - content authority (which source wins when data conflicts)
 - key architecture decisions (routing strategy, data format, service worker placement)
+- directory layout and asset rules
 - design references (style guides, PRDs, feature specs)
-
-Currently the overlay is documentation. It helps keep project-specific decisions out of forks of the standard.
 
 ## Update, Disable, and Remove
 
@@ -174,13 +173,9 @@ That removes the Web XP-managed block from `CLAUDE.md` and `CODEX.md` in the cur
 
 ### Remove From Your System
 
-Current system removal is also manual:
-
 ```bash
-rm -rf ~/.web-xp
+rm -rf ~/.web-xp ~/.claude/skills/web-xp* ~/.codex/skills/web-xp*
 ```
-
-For Claude Code, also remove the copied runtime files from `~/.claude/skills/` if you installed them there.
 
 ## Architecture
 
