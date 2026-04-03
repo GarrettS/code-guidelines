@@ -42,6 +42,13 @@ Files are rolling logs. Each exchange starts with `---` and a timestamp heading.
 3. Agent B writes results to its outbound file.
 4. Agent A reads its inbound file and either closes the loop or writes a follow-up.
 
+## Human Shorthand
+
+The human may use shorthand to direct handoff actions:
+
+- **check**, **chk** — read your inbox now
+- **tell**, **ask** — write a message to the other agent's inbox now
+
 ## Watch Guidance
 
 If your agent session can watch files, watch your inbound file:

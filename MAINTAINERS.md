@@ -66,7 +66,7 @@ What this means in practice:
 
 To add Web XP support for another agent platform:
 
-1. Implement the four runtime capabilities and three setup capabilities documented in this file.
+1. Implement the four runtime capabilities and three setup capabilities defined in `DESIGN.md`.
 2. Point all file references at the core files (`code-guidelines.md`, `code-philosophy.md`, `bin/pre-commit-check.sh`).
 3. Define a project contract mechanism that can express `off | explicit | always-on`.
 4. Place adapter documentation and authored packaging source in `adapters/<platform>/`. If the platform requires a specific path for skill discovery (e.g. `.claude/skills/` for Claude Code), generate or sync that runtime/package path from the adapter source and document it in the adapter README.
