@@ -8,9 +8,9 @@ WEB_XP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SKILLS_SRC="${WEB_XP_DIR}/.claude/skills"
 SKILLS_DEST="${HOME}/.claude/skills"
 CODEX_SKILL_SRC="${WEB_XP_DIR}/adapters/codex/skills/web-xp-init"
-CODEX_SKILL_DEST="${HOME}/.codex/skills/web-xp-init"
+CODEX_SKILL_DEST="${HOME}/.agents/skills/web-xp-init"
 CODEX_REMOVE_SKILL_SRC="${WEB_XP_DIR}/adapters/codex/skills/web-xp-remove"
-CODEX_REMOVE_SKILL_DEST="${HOME}/.codex/skills/web-xp-remove"
+CODEX_REMOVE_SKILL_DEST="${HOME}/.agents/skills/web-xp-remove"
 
 if [ ! -d "$SKILLS_SRC" ]; then
   echo "error: skill source not found at ${SKILLS_SRC}" >&2
