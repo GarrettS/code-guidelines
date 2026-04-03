@@ -26,25 +26,18 @@ git -C ~/.web-xp pull && ~/.web-xp/bin/install.sh
 
 ### Claude Code
 
-In a project, run:
+In a project, run:—
 
 ```text
 /web-xp-init
 ```
-
-That creates or updates `CLAUDE.md` in the current project.
+— to create or update `CLAUDE.md` in the current project.
 
 ### Codex
 
-In Codex, run:
+In Codex, `web-xp-init` (no slash) creates or updates `CODEX.md` in the current project.
 
-```text
-web-xp-init
-```
-
-That creates or updates `CODEX.md` in the current project.
-
-You can also bootstrap directly from the shell:
+Alternatively, you can bootstrap Web XP directly from the shell:
 
 ```bash
 ~/.web-xp/bin/web-xp-init claude
