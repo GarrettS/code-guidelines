@@ -6,18 +6,22 @@ Use shared files in `agent-handoff/` to coordinate work between agents.
 
 Core principle:
 
-The agents must work together and scrutinize each other for errors. Handoff is not just status passing. Each agent should actively review the other agent's reasoning, implementation, and assumptions.
+The agents must work together and scrutinize each other for errors. Handoff is not just status passing. Each agent should actively review the other agent's reasoning, implementation, and assumptions. When reading and replying, keep this core principle in mind.
 
 ## Rules
 
-1. Read your inbox before starting work and before replying.
+0. Keep the core principle in mind.
+1. Read your inbox before starting work and before replying. Think. Be insightful.
 2. If the inbox contains an actionable request, do that inbox work before any other substantial task and before replying elsewhere.
 3. If the actionable request requires a reply when done, write that reply to your outbox.
 4. Write decisions, findings, and open questions to your outbox.
 5. Every message starts with `---` and a timestamp heading (e.g. `## 2026-04-02 20:30 PDT`).
 6. Keep messages concise and action-oriented.
 7. Do not assume the other agent has seen terminal output. Write the important part to the file.
-8. Include material insights, architectural implications, and nearby risks — not just the narrow answer.
+8. Include material insights, architectural implications, and nearby risks — not just the narrow answer. 
+9. When replying with pushback, give reasons. Explain why.
+10. For multi-step tasks, complete each step, notify the other agent(s) and the human, then proceed to the next. Short; a few lines at most per step — include reasons and relevant details, but don't narrate every file edit. When all steps are done, notify again.
+11. Any questions, concerns, or problems: ask.
 
 ## Files
 
