@@ -101,9 +101,16 @@ Project mode is local to the project:
 - **always-on**: Web XP runs every session and before every commit
 - **off**: Web XP stays inactive in that project
 
-## Agent Skills
+| Skill | What it does |
+|---|---|
+| `web-xp-init` | Create or update the project contract |
+| `web-xp-on` | Enable always-on enforcement |
+| `web-xp-off` | Disable enforcement |
+| `web-xp-remove` | Remove Web XP from the current project |
 
-### Session (no files changed)
+## Session Skills
+
+Session skills are for evaluating Web XP or for one-off code checks. They load the standards into the current conversation but do not modify `CLAUDE.md` or `CODEX.md`. Without a project contract, that guidance is session-scoped: it is not automatically reloaded in later sessions, and it is easier for the standards to fall out of focus as the conversation grows. Running `web-xp-init` creates a project contract, which gives the agent a more consistent enforcement path across sessions and commits.
 
 | Skill | Role | What it does |
 |---|---|---|
@@ -111,15 +118,6 @@ Project mode is local to the project:
 | `web-xp-check` | auditor | Audit the current diff |
 | `web-xp-review` | auditor | Review any code against the standards |
 | `web-xp-apply` | coder | Walk through fixes one at a time with approval |
-
-### Project (modifies project files)
-
-| Skill | What it does |
-|---|---|
-| `web-xp-init` | Create or update the project contract |
-| `web-xp-on` | Enable always-on enforcement |
-| `web-xp-off` | Disable enforcement |
-| `web-xp-remove` | Remove Web XP from the current project |
 
 ## Project Overlay
 
