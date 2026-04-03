@@ -191,10 +191,10 @@ All adapters point at the same core files. They do not duplicate the standard �
 ### Existing adapters
 
 **Claude** (implemented — `adapters/claude/` source, packaged to `.claude/skills/`):
-Seven native skills covering all capabilities above. Project contract: `CLAUDE.md`, built from shared `AGENT.md` + Claude overlay. Claude skill source lives in `adapters/claude/`; `.claude/skills/` is the platform-native runtime/package path for local Claude development and install packaging.
+Seven native skills covering all capabilities above. Project contract: `CLAUDE.md`, built from `adapters/shared-base/AGENT.md` + Claude overlay. Claude skill source lives in `adapters/claude/`; `.claude/skills/` is the platform-native runtime/package path for local Claude development and install packaging.
 
 **Codex** (implemented — `adapters/codex/`):
-Capability spec files and convention-based contract (`CODEX.md`). Built from shared `AGENT.md` + Codex overlay.
+Capability spec files and convention-based contract (`CODEX.md`). Built from `adapters/shared-base/AGENT.md` + Codex overlay.
 
 ---
 

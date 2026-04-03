@@ -8,9 +8,9 @@ Implemented. This is the reference adapter.
 
 ## How it works
 
-1. `AGENT.md` (in the Web XP repo) is the shared base contract — version pin, session directives, pre-commit sequence.
+1. `adapters/shared-base/AGENT.md` is the shared base contract — version pin, session directives, pre-commit sequence.
 2. `overlay.md` (in this adapter) adds Claude-specific config: slash commands.
-3. `tools/build-contracts.sh` builds `CLAUDE.example.md` from `AGENT.md` + `overlay.md`. Projects copy the built output.
+3. `tools/build-contracts.sh` builds `CLAUDE.example.md` from `adapters/shared-base/AGENT.md` + `overlay.md`. Projects copy the built output.
 4. Claude skill source in this adapter is synced into `.claude/skills/` for local development and install packaging.
 
 ## Where the skills live
@@ -40,7 +40,7 @@ script exists to maintain physical copies in the runtime/package path.
 
 ## Project contract
 
-`CLAUDE.md` — built from `AGENT.md` + Claude overlay. Claude Code reads this file at session start.
+`CLAUDE.md` — built from `adapters/shared-base/AGENT.md` + Claude overlay. Claude Code reads this file at session start.
 
 | State | Representation |
 |-------|---------------|

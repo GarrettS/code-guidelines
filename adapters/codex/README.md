@@ -8,9 +8,9 @@ Initial implementation. Prompt/spec files define each Web XP operation for Codex
 
 ## How it works
 
-1. `AGENT.md` (in the Web XP repo) is the shared base contract — version pin, session directives, pre-commit sequence.
-2. `overlay.md` (in this adapter) adds Codex-specific config: spec directory, handoff protocol.
-3. The install builds `CODEX.md` from `AGENT.md` + `overlay.md`. Projects get one file.
+1. `adapters/shared-base/AGENT.md` is the shared base contract — version pin, session directives, pre-commit sequence.
+2. `overlay.md` (in this adapter) adds Codex-specific config such as the spec directory.
+3. The install builds `CODEX.md` from `adapters/shared-base/AGENT.md` + `overlay.md`. Projects get one file.
 4. One spec file per Web XP operation defines what each operation does.
 
 These flat `.md` spec files are the Codex equivalents of the Claude skill

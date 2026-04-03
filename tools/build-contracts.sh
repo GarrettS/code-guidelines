@@ -1,23 +1,24 @@
 #!/bin/bash
 # Internal maintainer tooling in the Web XP checkout (`~/.web-xp`).
 # Not run inside consuming project repos during normal Web XP use.
-# Builds the shipped agent-specific contract templates from shared
-# `AGENT.md` + per-adapter overlays.
+# Builds the shipped agent-specific contract templates from the shared
+# base contract source + per-adapter overlays.
 #
-# AGENT.md is the shared base contract — project-level rules that apply
-# to every agent. This script concatenates it with each adapter's
-# overlay.md to produce a built contract (e.g. CLAUDE.example.md).
-# Because the build is plain concatenation (cat), anything in AGENT.md
-# or overlay.md appears verbatim in the output. Do not put maintainer
-# comments, build-chain docs, or internal notes in those files —
-# they will leak into emitted project contracts.
+# `adapters/shared-base/AGENT.md` is the shared base contract —
+# project-level rules that apply to every agent. This script
+# concatenates it with each adapter's overlay.md to produce a built
+# contract (e.g. CLAUDE.example.md). Because the build is plain
+# concatenation (cat), anything in the shared base contract or
+# overlay.md appears verbatim in the output. Do not put maintainer
+# comments, build-chain docs, or internal notes in those files — they
+# will leak into emitted project contracts.
 #
 # Usage: bash tools/build-contracts.sh
 
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-AGENT="$REPO_ROOT/AGENT.md"
+AGENT="$REPO_ROOT/adapters/shared-base/AGENT.md"
 BUILT=0
 
 build() {
