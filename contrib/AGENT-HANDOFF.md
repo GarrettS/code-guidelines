@@ -1,5 +1,7 @@
 # Agent Handoff Protocol
 
+**Before writing a message: run `date` to get the current time. Use that output. If it fails, ask the human. Do not guess, estimate, interpolate, or fabricate a timestamp under any circumstances.**
+
 This protocol is for developing Web XP itself — coordinating the agents that work on this repo. It is not part of the Web XP product and is not emitted into user projects. The repo's own contract files (`CLAUDE.md`) reference this protocol; the built contract templates (`CLAUDE.example.md`, `CODEX.example.md`) do not.
 
 Use shared files in `agent-handoff/` to coordinate work between agents.
@@ -15,7 +17,7 @@ The agents must work together and scrutinize each other for errors. Handoff is n
 2. If the inbox contains an actionable request, do that inbox work before any other substantial task and before replying elsewhere.
 3. If the actionable request requires a reply when done, write that reply to your outbox.
 4. Write decisions, findings, and open questions to your outbox.
-5. Every message starts with `---` and an ISO 8601 extended format timestamp heading to the second (e.g. `## 2026-04-02T20:30:45-07:00`). Read the message with the latest timestamp — that is the current message.
+5. Every message starts with `---` and an ISO 8601 extended format timestamp heading to the second (e.g. `## 2026-04-02T20:30:45-07:00`). Use actual wall clock time at the moment of writing — do not estimate, round, or copy from another message. Read the message with the latest timestamp — that is the current message.
 6. Keep messages concise and action-oriented.
 7. Do not assume the other agent has seen terminal output. Write the important part to the file.
 8. Include material insights, architectural implications, and nearby risks — not just the narrow answer. 
