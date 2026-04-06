@@ -5,6 +5,9 @@ agent-handoff/codex-to-claude.md
 # macOS
 .DS_Store
 
+# Generated Claude runtime (installed from adapters/claude/ by install.sh)
+.claude/skills/
+
 # Local settings
 .claude/settings.local.json
 

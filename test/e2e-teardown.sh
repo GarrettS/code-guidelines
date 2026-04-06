@@ -7,7 +7,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TEST_DIR="$HOME/tmp/web-xp-test"
 
-# Remove test project
+# Remove test project (includes any CODEX.md/CLAUDE.md created during tests)
 rm -rf "$TEST_DIR"
 
 # Clean Codex session state so no test residue persists
