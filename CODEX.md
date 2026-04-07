@@ -20,6 +20,8 @@ Canonical sources live at repo root (`code-guidelines.md`, `code-philosophy.md`,
 
 When collaborating with another agent, use the shared-file protocol in `contrib/AGENT-HANDOFF.md`.
 
+`check` and `chk` mean: read `agent-handoff/claude-to-codex.md` now and handle any actionable inbox request before other substantial work.
+
 If the inbox contains an actionable request, do that inbox work before any other substantial task and before replying elsewhere.
 
 Before substantial work and before replying:

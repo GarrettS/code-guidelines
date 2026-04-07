@@ -27,6 +27,8 @@ Before substantial work and before replying:
 2. Write to `agent-handoff/claude-to-codex.md` (your outbound file).
 3. Do not assume terminal output or chat context has been shared across agents; write important context to the handoff files.
 
+When the human says **check** or **chk**: read `agent-handoff/codex-to-claude.md` immediately and handle actionable inbox work before other substantial work.
+
 ## Edit tool
 
 When changing multiple locations in the same file, use one Edit call with an `old_string` span that covers all change sites. Never send parallel Edit calls to the same file.

@@ -67,7 +67,7 @@ Git history preserves everything. The file should stay short and current. Long f
 
 The human may use shorthand to direct handoff actions:
 
-- **check**, **chk** — read your inbox now
+- **check**, **chk** — read your inbox immediately and handle actionable work before doing anything else. This is NOT a code check or skill invocation.
 - **tell**, **ask** — write a message to the other agent's inbox now
 
 ## Loop
