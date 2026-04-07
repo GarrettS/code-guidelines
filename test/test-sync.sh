@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regression tests for tools/check-web-xp-sync.sh
-# Runs the sync in an isolated temp git repo.
+# Runs the adapter-skill rebuild in an isolated temp git repo.
 #
 # Usage: bash test/test-sync.sh
 
@@ -54,7 +54,7 @@ mkdir -p "$CASE_DIR/tools"
 cp "$SYNC_SCRIPT" "$CASE_DIR/tools/check-web-xp-sync.sh"
 cp "$BUILD_SCRIPT" "$CASE_DIR/tools/build-adapter-skills.sh"
 
-for skill_name in web-xp web-xp-check web-xp-review web-xp-apply web-xp-init web-xp-on web-xp-off web-xp-remove; do
+for skill_name in web-xp web-xp-check web-xp-review web-xp-apply web-xp-on web-xp-off; do
   write_file "adapters/shared-base/skills/${skill_name}.md" "# ${skill_name}
 
 ## Purpose
@@ -64,7 +64,7 @@ done
 
 (cd "$CASE_DIR" && bash tools/check-web-xp-sync.sh >/dev/null)
 
-TARGET="$CASE_DIR/.claude/skills/web-xp/SKILL.md"
+TARGET="$CASE_DIR/adapters/claude/web-xp/SKILL.md"
 
 assert_true "Generated skill keeps YAML frontmatter first" \
   "[ \"$(head -1 "$TARGET")\" = '---' ]"

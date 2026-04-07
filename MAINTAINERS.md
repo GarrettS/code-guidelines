@@ -36,7 +36,7 @@ Why Codex is now packaged this way:
 - Codex discovers user-level skills from `$HOME/.agents/skills/` ([official skills doc](https://developers.openai.com/codex/skills)).
 - Clean-state probing on `codex-cli 0.118.0` confirmed explicit discovery works from this path for both bootstrap and non-bootstrap skills.
 - Using discovered skill folders for both Claude and Codex keeps the adapter structure symmetric and removes the old Codex split model.
-- Setup and cleanup skills still delegate to the canonical shell commands (`bin/web-xp-init`, `bin/web-xp-remove`), keeping project contract mutation logic in one place.
+- Setup and cleanup still delegate to canonical shell commands (`bin/web-xp-on`, `bin/web-xp-off`), keeping project contract mutation logic in one place.
 
 What `install.sh` does for Codex:
 
@@ -53,8 +53,9 @@ If Codex later changes its documented user-level path, revisit this section and 
 
 Project setup and cleanup are centralized in shell scripts:
 
-- `bin/web-xp-init`
-- `bin/web-xp-remove`
+- `bin/web-xp-on`
+- `bin/web-xp-off`
+- `bin/web-xp-off
 
 Agent-specific setup skills should delegate to those scripts rather than reimplement the file mutation logic.
 
@@ -75,7 +76,7 @@ What this means in practice:
 
 To add Web XP support for another agent platform:
 
-1. Implement the four runtime capabilities and three setup capabilities defined in `DESIGN.md`.
+1. Implement the four runtime capabilities and two setup capabilities defined in `DESIGN.md`.
 2. Point all file references at the core files (`code-guidelines.md`, `code-philosophy.md`, `bin/pre-commit-check.sh`).
 3. Define a project contract mechanism that can express `off | explicit | always-on`.
 4. Place adapter documentation and authored packaging source in `adapters/<platform>/`. If the platform requires a specific path for skill discovery (e.g. `.claude/skills/` for Claude Code), generate or sync that runtime/package path from the adapter source and document it in the adapter README.
@@ -104,8 +105,9 @@ web-xp/
 ├── bin/
 │   ├── pre-commit-check.sh     # core mechanical checks
 │   ├── install.sh              # post-clone / post-pull installer
-│   ├── web-xp-init             # canonical project bootstrap
-│   └── web-xp-remove           # canonical project cleanup
+│   ├── web-xp-on              # canonical project setup
+│   ├── web-xp-off             # project cleanup command
+│   └── web-xp-off              # canonical project cleanup
 ├── tools/
 │   ├── build-contracts.sh      # builds agent contracts from shared base + overlays
 │   ├── build-adapter-skills.sh # builds concrete skill/spec packaging from shared skill source
@@ -120,30 +122,24 @@ web-xp/
 │   │   ├── web-xp-check/
 │   │   ├── web-xp-apply/
 │   │   ├── web-xp-review/
-│   │   ├── web-xp-init/
 │   │   ├── web-xp-on/
-│   │   ├── web-xp-off/
-│   │   └── web-xp-remove/
+│   │   └── web-xp-off/
 │   └── codex/                  # Codex overlay, built contract, built skill files, docs
 │       └── skills/             # Codex skills (installed to $HOME/.agents/skills/)
 │           ├── web-xp/
 │           ├── web-xp-check/
 │           ├── web-xp-apply/
 │           ├── web-xp-review/
-│           ├── web-xp-init/
 │           ├── web-xp-on/
-│           ├── web-xp-off/
-│           └── web-xp-remove/
+│           └── web-xp-off/
 ├── .claude/
 │   └── skills/                 # generated Claude runtime/package path
 │       ├── web-xp/
 │       ├── web-xp-check/
 │       ├── web-xp-apply/
 │       ├── web-xp-review/
-│       ├── web-xp-init/
 │       ├── web-xp-on/
-│       ├── web-xp-off/
-│       └── web-xp-remove/
+│       └── web-xp-off/
 ├── contrib/                    # contributor tooling (not user-facing)
 │   └── AGENT-HANDOFF.md        # handoff protocol
 ├── test/

@@ -4,7 +4,7 @@ Adapter-neutral source for the `web-xp-on` capability.
 
 ## Purpose
 
-Activate the Web XP directives inside the managed block in the adapter's project contract so they are active for all sessions.
+Set up or update the adapter's project contract so Web XP enforcement is active for the current project.
 
 ## Activation
 
@@ -15,18 +15,19 @@ Activate when the user asks to turn Web XP on, enable standards, re-enable enfor
 The concrete adapter wrapper must provide:
 
 - the project contract filename
-- any adapter-native command spelling shown to the user
-- the adapter-specific identifiers used to recognize Web XP directives
+- the install command to show when Web XP is missing
+- the canonical shell bootstrap command, if the adapter delegates to it
+- whether the adapter requires preview before write
 
 ## Procedure
 
-### 1. Locate the project contract
+### 1. Verify Web XP is installed
 
-Look for the adapter's project contract file in the project root. If it does not exist, tell the user to run the adapter's `web-xp-init` capability first and stop.
+Check that `~/.web-xp/` exists. If it does not, tell the user how to install Web XP and stop.
 
-### 2. Check for the Web XP-managed block
+### 2. Create or update the project contract
 
-Look for:
+Use this Web XP-managed block:
 
 ```md
 <!-- BEGIN WEB-XP: managed block. Edit outside this block. Changes inside may be replaced by Web XP commands. -->
@@ -34,24 +35,18 @@ Look for:
 <!-- END WEB-XP -->
 ```
 
-If no managed block exists, tell the user to run the adapter's `web-xp-init` capability first and stop.
+If the concrete adapter delegates to the canonical shell bootstrap script, use that script rather than reimplementing the file mutation logic.
 
-### 3. Check for directives inside the block
+If the contract file does not exist, create it from the adapter's built contract template.
 
-Look inside the managed block for the adapter's Web XP directives.
+If the contract file already exists:
 
-If no directives exist inside the block, neither active nor commented out, tell the user to run `web-xp-init` first and stop.
+- if the managed block is missing, prepend the built contract block to the file
+- if the managed block exists, replace that block with the current built contract block
+- if the existing block differs from the current built contract block, warn that changes inside the managed block will be replaced, then replace it
 
-### 4. Check current state
+Never modify content outside the Web XP-managed block.
 
-If the directives are already active, report `Already on.` and stop.
+### 3. Report
 
-### 5. Uncomment
-
-Remove HTML comment markers around the directive sections to activate them.
-
-Never modify content outside the managed block.
-
-### 6. Report
-
-Report that Web XP enforcement is enabled.
+Summarize what was created or updated, and whether the managed block was replaced.

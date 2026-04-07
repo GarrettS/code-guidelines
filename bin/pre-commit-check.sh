@@ -1,5 +1,5 @@
 #!/bin/bash
-# Distributed to consuming projects by /web-xp-init.
+# Distributed to consuming projects by /web-xp-on.
 # Canonical copy — also synced to .claude/skills/ by check-web-xp-sync.sh.
 #
 # pre-commit-check.sh

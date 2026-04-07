@@ -10,13 +10,13 @@ description: 'Activate when the user asks to turn Web XP off, disable standards,
 ## Claude bindings
 
 - Project contract file: `CLAUDE.md`.
-- Recognize Web XP directives by the `On every session` and `Before every commit` sections in the managed block.
+- Delegate to `~/.web-xp/bin/web-xp-off claude`.
 
 ## Shared capability
 
 ## Purpose
 
-Comment out the Web XP directives inside the managed block in the adapter's project contract so they are inactive for all sessions.
+Remove Web XP from the current project's adapter contract.
 
 ## Activation
 
@@ -24,38 +24,20 @@ Activate when the user asks to turn Web XP off, disable standards, pause enforce
 
 ## Procedure
 
-### 1. Locate the project contract
+### 1. Verify Web XP is installed
 
-Look for the adapter's project contract file in the project root. If it does not exist, report that no Web XP directives were found and stop.
+Check that `~/.web-xp/` exists. If it does not, report that Web XP is not installed and stop.
 
-### 2. Check for the Web XP-managed block
+### 2. Delegate to the canonical cleanup script
 
-Look for:
+Run the adapter's canonical cleanup script entrypoint. Do not reimplement the project contract mutation logic in this capability.
 
-```md
-<!-- BEGIN WEB-XP: managed block. Edit outside this block. Changes inside may be replaced by Web XP commands. -->
-...
-<!-- END WEB-XP -->
-```
+The cleanup behavior is:
 
-If no managed block exists, report that no Web XP directives were found and stop.
+- remove the Web XP-managed block from the adapter contract file
+- delete the contract file if it only contained the managed block
+- leave content outside the managed block untouched
 
-### 3. Check for directives inside the block
+### 3. Report
 
-Look inside the managed block for the adapter's Web XP directives.
-
-If no directives exist inside the block, report that no Web XP directives were found and stop.
-
-### 4. Check current state
-
-If the directives are already commented out, report `Already off.` and stop.
-
-### 5. Comment out
-
-Wrap each directive section inside the managed block in HTML comments. Do not delete them.
-
-Never modify content outside the managed block.
-
-### 6. Report
-
-Report that Web XP enforcement is disabled.
+Summarize what the script removed or updated.

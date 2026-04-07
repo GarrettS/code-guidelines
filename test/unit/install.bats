@@ -20,16 +20,16 @@ teardown() {
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-check"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-review"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-apply"
-  assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-init"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-on"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-off"
-  assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-remove"
 }
 
 @test "replaces stale Web XP files on reinstall" {
   # Pre-seed a stale standards file and a stale skill dir
   mkdir -p "$TMP_HOME/.claude/skills/web-xp-check"
+  mkdir -p "$TMP_HOME/.claude/skills/web-xp-init"
   echo "stale" > "$TMP_HOME/.claude/skills/web-xp-check/SKILL.md"
+  echo "stale" > "$TMP_HOME/.claude/skills/web-xp-init/SKILL.md"
   echo "stale" > "$TMP_HOME/.claude/skills/code-guidelines.md"
 
   run env HOME="$TMP_HOME" bash "$INSTALL_SCRIPT"
@@ -38,6 +38,7 @@ teardown() {
   # Stale content should be replaced with real content
   [ "$(head -1 "$TMP_HOME/.claude/skills/web-xp-check/SKILL.md")" != "stale" ]
   [ "$(head -1 "$TMP_HOME/.claude/skills/code-guidelines.md")" != "stale" ]
+  [ ! -e "$TMP_HOME/.claude/skills/web-xp-init" ]
 }
 
 @test "preserves unrelated files in skills directory" {
@@ -60,8 +61,16 @@ teardown() {
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-check"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-review"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-apply"
-  assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-init"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-on"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-off"
-  assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-remove"
+}
+
+@test "removes stale deprecated Codex setup skills on reinstall" {
+  mkdir -p "$TMP_HOME/.agents/skills/web-xp-remove"
+  echo "stale" > "$TMP_HOME/.agents/skills/web-xp-remove/SKILL.md"
+
+  run env HOME="$TMP_HOME" bash "$INSTALL_SCRIPT"
+  [ "$status" -eq 0 ]
+
+  [ ! -e "$TMP_HOME/.agents/skills/web-xp-remove" ]
 }

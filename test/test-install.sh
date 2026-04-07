@@ -23,6 +23,11 @@ assert_dir() {
   [ -d "$path" ] || fail "missing directory: $path"
 }
 
+assert_not_exists() {
+  local path="$1"
+  [ ! -e "$path" ] || fail "unexpected path: $path"
+}
+
 tmp_home="$(mktemp -d)"
 trap 'rm -rf "$tmp_home"' EXIT
 
@@ -32,20 +37,20 @@ assert_dir "$tmp_home/.claude/skills/web-xp"
 assert_dir "$tmp_home/.claude/skills/web-xp-check"
 assert_dir "$tmp_home/.claude/skills/web-xp-review"
 assert_dir "$tmp_home/.claude/skills/web-xp-apply"
-assert_dir "$tmp_home/.claude/skills/web-xp-init"
 assert_dir "$tmp_home/.claude/skills/web-xp-on"
 assert_dir "$tmp_home/.claude/skills/web-xp-off"
-assert_dir "$tmp_home/.claude/skills/web-xp-remove"
+assert_not_exists "$tmp_home/.claude/skills/web-xp-init"
+assert_not_exists "$tmp_home/.claude/skills/web-xp-remove"
 pass "installs all Claude skills"
 
 assert_dir "$tmp_home/.agents/skills/web-xp"
 assert_dir "$tmp_home/.agents/skills/web-xp-check"
 assert_dir "$tmp_home/.agents/skills/web-xp-review"
 assert_dir "$tmp_home/.agents/skills/web-xp-apply"
-assert_dir "$tmp_home/.agents/skills/web-xp-init"
 assert_dir "$tmp_home/.agents/skills/web-xp-on"
 assert_dir "$tmp_home/.agents/skills/web-xp-off"
-assert_dir "$tmp_home/.agents/skills/web-xp-remove"
+assert_not_exists "$tmp_home/.agents/skills/web-xp-init"
+assert_not_exists "$tmp_home/.agents/skills/web-xp-remove"
 pass "installs all Codex skills"
 
 echo "$pass_count passed, 0 failed"

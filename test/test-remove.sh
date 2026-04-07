@@ -4,8 +4,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-INIT_SCRIPT="$REPO_ROOT/bin/web-xp-init"
-REMOVE_SCRIPT="$REPO_ROOT/bin/web-xp-remove"
+INIT_SCRIPT="$REPO_ROOT/bin/web-xp-on"
+REMOVE_SCRIPT="$REPO_ROOT/bin/web-xp-off"
 
 pass_count=0
 

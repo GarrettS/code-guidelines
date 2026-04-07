@@ -24,10 +24,8 @@ The skill folders under `adapters/codex/skills/` are the Codex equivalents of th
 | `web-xp-check` | auditor | Audit diff |
 | `web-xp-review` | auditor | Review any code |
 | `web-xp-apply` | coder | Apply fixes with approval |
-| `web-xp-init` | setup | Bootstrap project |
-| `web-xp-on` | setup | Enable always-on enforcement |
-| `web-xp-off` | setup | Disable enforcement |
-| `web-xp-remove` | setup | Remove Web XP from project |
+| `web-xp-on` | setup | Create or update the project contract and enable enforcement |
+| `web-xp-off` | setup | Remove Web XP from the project contract |
 
 ## Install
 
@@ -42,25 +40,25 @@ Install copies the full Codex skill set into `$HOME/.agents/skills/`.
 Then in each project, inside Codex:
 
 ```text
-web-xp-init
+web-xp-on
 ```
 
 Shell fallback:
 
 ```bash
-~/.web-xp/bin/web-xp-init codex
+~/.web-xp/bin/web-xp-on codex
 ```
 
 To remove Web XP from the current project inside Codex:
 
 ```text
-web-xp-remove
+web-xp-off
 ```
 
 Shell fallback:
 
 ```bash
-~/.web-xp/bin/web-xp-remove codex
+~/.web-xp/bin/web-xp-off codex
 ```
 
 To update:

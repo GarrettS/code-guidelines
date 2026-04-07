@@ -38,11 +38,11 @@ Three architectural states. Orthogonal to which agent is running.
 
 | State | Project contract | User action |
 |-------|-----------------|-------------|
-| **off** | Directives commented out | `/web-xp-off` (Claude) |
-| **explicit** | No directives present | No command — this is the default before `/web-xp-init` |
+| **off** | No directives present | `/web-xp-off` (Claude) |
+| **explicit** | No directives present | Default state before `/web-xp-on` |
 | **always-on** | Active directives | `/web-xp-on` (Claude) |
 
-`explicit` is not a command — it is the state a project is in before any contract is written, or after directives are removed entirely. The current `/web-xp-on` and `/web-xp-off` commands toggle between `off` and `always-on` only. Whether `explicit` needs its own command is an open question; for now it does not, because a project without a contract is already in explicit mode.
+`explicit` is not a command — it is the state a project is in before any contract is written, or after directives are removed entirely. The current `/web-xp-on` and `/web-xp-off` commands create or remove the contract block directly.
 
 ### Agent contract mechanisms
 
@@ -88,7 +88,7 @@ The agent reviewing code against the standard.
 These capabilities are administrative — used during project setup, not during the code/audit loop:
 
 - **Bootstrap** — set up a new project with a contract file
-- **Toggle enforcement** — switch between off and always-on
+- **Toggle enforcement** — switch between explicit/off and always-on
 
 In single-agent mode, the same agent handles setup and runtime. In multi-agent mode, setup is a human decision made before agents start working.
 
@@ -114,7 +114,7 @@ One agent fills both roles. This is the current Web XP workflow.
 └──────────────┘
 ```
 
-No orchestration layer needed. The agent loads constraints, writes code, runs checks before commit, applies fixes. One agent uses both coder and auditor skills. Setup skills (`web-xp-init`, `web-xp-on`, `web-xp-off`) are used at project configuration time, not during the normal code/audit loop.
+No orchestration layer needed. The agent loads constraints, writes code, runs checks before commit, applies fixes. One agent uses both coder and auditor skills. Setup skills (`web-xp-on`, `web-xp-off`) are used at project configuration time, not during the normal code/audit loop.
 
 ### Split: one codes, one audits
 
@@ -173,9 +173,8 @@ An adapter teaches one agent platform how to use Web XP. Any agent that can read
 
 | Capability | What it does |
 |------------|--------------|
-| Bootstrap | Create a project contract file |
-| Enable enforcement | Activate always-on directives in the project contract |
-| Disable enforcement | Deactivate directives (preserving them for re-enable) |
+| Enable enforcement | Create or update the project contract with always-on directives |
+| Disable enforcement | Remove the managed block from the project contract |
 
 **Project contract:**
 

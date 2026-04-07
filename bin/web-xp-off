@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Project cleanup command for Web XP.
+# Disable Web XP for a project.
 # Removes managed project contract blocks or files.
 
 set -euo pipefail
@@ -9,9 +9,9 @@ END_MARKER='<!-- END WEB-XP -->'
 
 usage() {
   cat <<'EOF'
-Usage: web-xp-remove [claude|codex|all]
+Usage: web-xp-off [claude|codex|all]
 
-Remove Web XP project contract footprints in the current directory.
+Disable Web XP in the current project.
 
 Defaults to `all`, which removes Web XP from both `CLAUDE.md` and `CODEX.md`.
 EOF

@@ -146,7 +146,7 @@ git commit -m "initial bad code"
 echo "// touched" >> app.js
 ```
 
-Then open a fresh agent session and run `web-xp-init` (Codex) or `/web-xp-init` (Claude).
+Then open a fresh agent session and run `web-xp-on` (Codex) or `/web-xp-on` (Claude).
 
 ### Teardown
 
@@ -154,10 +154,10 @@ Then open a fresh agent session and run `web-xp-init` (Codex) or `/web-xp-init` 
 rm -rf "$TEST_DIR"
 ```
 
-### Test C1: web-xp-init creates a correct contract
+### Test C1: web-xp-on creates a correct contract
 
 **Steps:**
-1. Run `web-xp-init` (Codex) or `/web-xp-init` (Claude)
+1. Run `web-xp-on` (Codex) or `/web-xp-on` (Claude)
 2. Read the created contract file (`CODEX.md` or `CLAUDE.md`)
 
 **Expected outcome:**
@@ -232,7 +232,7 @@ git commit -m "initial bad code"
 echo "// touched" >> app.js
 ```
 
-Then open a fresh agent session, run `web-xp-init`, then run `web-xp-off`.
+Then open a fresh agent session, run `web-xp-on`, then run `web-xp-off`.
 
 ### Teardown
 

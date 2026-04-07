@@ -34,10 +34,8 @@ script exists to maintain physical copies in the runtime/package path.
 | `web-xp-check` | auditor | Audit diff |
 | `web-xp-review` | auditor | Review any code |
 | `web-xp-apply` | coder | Apply fixes with approval |
-| `web-xp-init` | setup | Bootstrap project |
-| `web-xp-on` | setup | Enable always-on enforcement |
-| `web-xp-off` | setup | Disable enforcement |
-| `web-xp-remove` | setup | Remove Web XP from project |
+| `web-xp-on` | setup | Create or update the project contract and enable enforcement |
+| `web-xp-off` | setup | Remove Web XP from the project contract |
 
 ## Project contract
 
@@ -45,7 +43,7 @@ script exists to maintain physical copies in the runtime/package path.
 
 | State | Representation |
 |-------|---------------|
-| off | Directives commented out (`<!-- ... -->`) |
+| off | No directives present |
 | explicit | No directives present |
 | always-on | Active directives |
 
@@ -68,7 +66,7 @@ Then in each project:
 cp ~/.web-xp/adapters/claude/CLAUDE.example.md CLAUDE.md
 ```
 
-Or run `/web-xp-init` to create or update the Web XP block automatically.
+Or run `/web-xp-on` to create or update the Web XP block automatically.
 
 To update:
 

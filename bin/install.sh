@@ -30,11 +30,13 @@ fi
 
 # Claude: clean previous Web XP install, then copy fresh
 mkdir -p "$CLAUDE_SKILLS_DEST"
+rm -rf "${CLAUDE_SKILLS_DEST}/web-xp-init" "${CLAUDE_SKILLS_DEST}/web-xp-remove"
 for skill_path in "$CLAUDE_SKILLS_SRC"/web-xp*/; do
   skill_name="$(basename "$skill_path")"
   rm -rf "${CLAUDE_SKILLS_DEST}/${skill_name}"
   cp -r "$skill_path" "${CLAUDE_SKILLS_DEST}/${skill_name}"
 done
+rm -rf "${CLAUDE_SKILLS_DEST}/web-xp-init" "${CLAUDE_SKILLS_DEST}/web-xp-remove"
 rm -f "$CLAUDE_SKILLS_DEST/code-guidelines.md" \
       "$CLAUDE_SKILLS_DEST/code-philosophy.md" \
       "$CLAUDE_SKILLS_DEST/pre-commit-check.sh"
@@ -47,11 +49,13 @@ cp "$PRECOMMIT_SRC" "${CLAUDE_SKILLS_DEST}/pre-commit-check.sh"
 
 # Codex: install skill directories (clean first, then copy)
 mkdir -p "$CODEX_SKILLS_DEST"
+rm -rf "${CODEX_SKILLS_DEST}/web-xp-init" "${CODEX_SKILLS_DEST}/web-xp-remove"
 for skill_path in "$CODEX_SKILLS_SRC"/*; do
   skill_name="$(basename "$skill_path")"
   rm -rf "${CODEX_SKILLS_DEST}/${skill_name}"
   cp -r "$skill_path" "${CODEX_SKILLS_DEST}/${skill_name}"
 done
+rm -rf "${CODEX_SKILLS_DEST}/web-xp-init" "${CODEX_SKILLS_DEST}/web-xp-remove"
 
 echo "Claude skills installed to ${CLAUDE_SKILLS_DEST}"
 echo "Codex skills installed to ${CODEX_SKILLS_DEST}"

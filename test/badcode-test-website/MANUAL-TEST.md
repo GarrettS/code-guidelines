@@ -90,13 +90,13 @@ rm -rf "$TEST_DIR"
 
 ---
 
-## Test 4: web-xp-init creates correct contract
+## Test 4: web-xp-on creates correct contract
 
 **Setup:** Fresh directory with git. No contract.
 
 **Steps:**
 1. Open a fresh agent session in `$TEST_DIR/`
-2. Type: `web-xp-init` (or `/web-xp-init`)
+2. Type: `web-xp-on` (or `/web-xp-on`)
 3. In a separate terminal: `cat $TEST_DIR/CODEX.md` (or `CLAUDE.md`)
 
 **Expected:** Contract created with managed block markers (`<!-- BEGIN WEB-XP -->` / `<!-- END WEB-XP -->`). No "spec directory" or flat-file references. Contains session and commit directives.
@@ -105,7 +105,7 @@ rm -rf "$TEST_DIR"
 
 ## Test 5: Enforcement with contract (always-on)
 
-**Setup:** Fresh directory with git. Run `web-xp-init` to create contract.
+**Setup:** Fresh directory with git. Run `web-xp-on` to create contract.
 
 **Steps:**
 1. Open a fresh agent session in `$TEST_DIR/`
@@ -123,7 +123,7 @@ rm -rf "$TEST_DIR"
 
 ## Test 6: web-xp-off disables enforcement
 
-**Setup:** Fresh directory with git + contract from `web-xp-init`.
+**Setup:** Fresh directory with git + contract from `web-xp-on`.
 
 **Steps:**
 1. Open a fresh agent session in `$TEST_DIR/`
@@ -156,7 +156,7 @@ rm -rf "$TEST_DIR"
 | 1 | Explicit invocation without contract | Skill discovery works globally | | |
 | 2 | Auto-activation without contract | #17 — skills fire without opt-in | | |
 | 3 | Auto-activation does not enforce | Passive loading vs active enforcement | | |
-| 4 | web-xp-init creates correct contract | Contract correctness, no stale refs | | |
+| 4 | web-xp-on creates correct contract | Contract correctness, no stale refs | | |
 | 5 | Enforcement with contract | Always-on works; #18 — scope violation | | |
 | 6 | web-xp-off disables enforcement | Off mode actually disables | | |
 | 7 | web-xp-on re-enables enforcement | On/off toggle works | | |

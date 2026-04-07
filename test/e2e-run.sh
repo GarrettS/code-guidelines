@@ -4,7 +4,7 @@
 #
 # Usage:
 #   bash test/e2e-run.sh "run web-xp-check"
-#   bash test/e2e-run.sh "run web-xp-init"
+#   bash test/e2e-run.sh "run web-xp-on"
 #
 # Prerequisites:
 #   - webxp-test user exists (one-time: sudo sysadminctl -addUser webxp-test -password <pw>)

@@ -29,19 +29,19 @@ git -C ~/.web-xp pull && ~/.web-xp/bin/install.sh
 In a project, run:—
 
 ```text
-/web-xp-init
+/web-xp-on
 ```
 — to create or update `CLAUDE.md` in the current project.
 
 ### Codex
 
-In Codex, `web-xp-init` (no slash) creates or updates `CODEX.md` in the current project.
+In Codex, `web-xp-on` (no slash) creates or updates `CODEX.md` in the current project.
 
 Alternatively, you can bootstrap Web XP directly from the shell:
 
 ```bash
-~/.web-xp/bin/web-xp-init claude
-~/.web-xp/bin/web-xp-init codex
+~/.web-xp/bin/web-xp-on claude
+~/.web-xp/bin/web-xp-on codex
 ```
 
 ### What you get
@@ -53,8 +53,9 @@ After install, here is what is on your system and what each piece does:
 ├── code-guidelines.md              ← the doctrine
 ├── code-philosophy.md              ← why the doctrine works
 ├── bin/pre-commit-check.sh         ← mechanical checks
-├── bin/web-xp-init                 ← shell bootstrap fallback
-├── bin/web-xp-remove               ← shell project cleanup fallback
+├── bin/web-xp-on                 ← shell bootstrap plumbing
+├── bin/web-xp-off                  ← shell project cleanup command
+├── bin/web-xp-off                  ← shell cleanup
 ├── adapters/claude/                ← Claude skill source + overlay
 │   └── CLAUDE.example.md           ← built template
 └── adapters/codex/                 ← Codex skill source + overlay
@@ -86,8 +87,8 @@ The global install makes Web XP available to the agent. The project contract act
 - `CLAUDE.md` activates Web XP for Claude Code in that project
 - `CODEX.md` activates Web XP for Codex in that project
 - without a project contract, Web XP is still available globally, but usage is manual
-- `web-xp-on` enables always-on behavior in that project
-- `web-xp-off` disables enforcement in that project
+- `web-xp-on` creates or updates the project contract and enables always-on behavior
+- `web-xp-off` removes the project contract block and disables enforcement
 
 Project mode is local to the project:
 
@@ -97,14 +98,12 @@ Project mode is local to the project:
 
 | Skill | What it does |
 |---|---|
-| `web-xp-init` | Create or update the project contract |
-| `web-xp-on` | Enable always-on enforcement |
-| `web-xp-off` | Disable enforcement |
-| `web-xp-remove` | Remove Web XP from the current project |
+| `web-xp-on` | Create or update the project contract and enable enforcement |
+| `web-xp-off` | Remove Web XP from the current project contract |
 
 ## Session Skills
 
-Session skills are for evaluating Web XP or for one-off code checks. They load the standards into the current conversation but do not modify `CLAUDE.md` or `CODEX.md`. Without a project contract, that guidance is session-scoped: it is not automatically reloaded in later sessions, and it is easier for the standards to fall out of focus as the conversation grows. Running `web-xp-init` creates a project contract, which gives the agent a more consistent enforcement path across sessions and commits.
+Session skills are for evaluating Web XP or for one-off code checks. They load the standards into the current conversation but do not modify `CLAUDE.md` or `CODEX.md`. Without a project contract, that guidance is session-scoped: it is not automatically reloaded in later sessions, and it is easier for the standards to fall out of focus as the conversation grows. Running `web-xp-on` creates or updates a project contract, which gives the agent a more consistent enforcement path across sessions and commits.
 
 | Skill | Role | What it does |
 |---|---|---|
@@ -151,7 +150,7 @@ git -C ~/.web-xp pull && ~/.web-xp/bin/install.sh
 Disable Web XP in a project:
 
 - use `web-xp-off`
-- or manually comment out the Web XP directives inside the managed block
+- or manually remove the Web XP-managed block from the contract file
 
 Re-enable it with `web-xp-on`.
 
@@ -160,7 +159,7 @@ Re-enable it with `web-xp-on`.
 Project removal:
 
 ```bash
-~/.web-xp/bin/web-xp-remove
+~/.web-xp/bin/web-xp-off
 ```
 
 That removes the Web XP-managed block from `CLAUDE.md` and `CODEX.md` in the current project, and deletes either file if it only contains Web XP.

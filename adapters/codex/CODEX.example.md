@@ -18,6 +18,6 @@ Apply the standard to the new code you write for the user's request. Do not refa
 2. Review the diff against Patterns and Fail-Safe in `code-guidelines.md` from your Web XP install.
 ## Codex skill invocation
 
-Use installed Web XP skills by name, for example `web-xp`, `web-xp-check`, `web-xp-review`, and `web-xp-init`.
+Use installed Web XP skills by name, for example `web-xp`, `web-xp-check`, `web-xp-review`, and `web-xp-on`.
 
 <!-- END WEB-XP -->
