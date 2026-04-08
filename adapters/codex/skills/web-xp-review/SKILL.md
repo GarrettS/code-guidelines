@@ -72,11 +72,11 @@ For each finding, report:
 
 For framework code, show the vanilla equivalent side by side.
 
-### 5. Apply fixes only on explicit request or approval
+### 5. Prompt to apply fixes
 
-Do not auto-apply fixes. Review first.
+Do not auto-apply fixes. After presenting findings, ask the user: "Want me to apply these fixes?"
 
-If the human explicitly asks you to make changes, or approves proposed edits, then apply fixes using this flow:
+If the user agrees, apply fixes using this flow:
 
 1. present one coherent change at a time by default
 2. group changes only when they are the same kind of edit in the same file or tightly related scope

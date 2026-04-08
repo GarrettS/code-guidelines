@@ -342,7 +342,7 @@ When creating multiple similar elements in a loop, build one template element ou
 
 ### General
 
-- Line length: target 80 columns, 90 maximum. Break long concatenation and conditionals across lines.
+- Line length: target 80 columns, 90 maximum. Do not break a line that fits within the target. When a line must break, break at the [highest syntactic level](https://google.github.io/styleguide/jsguide.html#formatting-where-to-break) — after an operator, after a comma, or before a chained method. Continuation lines indent +4.
 
 ### HTML
 
