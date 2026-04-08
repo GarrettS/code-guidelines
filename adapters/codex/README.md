@@ -22,8 +22,7 @@ The skill folders under `adapters/codex/skills/` are the Codex equivalents of th
 |-----------|------|---------|
 | `web-xp` | both | Load constraints |
 | `web-xp-check` | auditor | Audit diff |
-| `web-xp-review` | auditor | Review any code |
-| `web-xp-apply` | coder | Apply fixes with approval |
+| `web-xp-review` | auditor + coder | Review any code; apply fixes only on explicit request or approval |
 | `web-xp-on` | setup | Create or update the project contract and enable enforcement |
 | `web-xp-off` | setup | Remove Web XP from the project contract |
 

@@ -76,7 +76,7 @@ The agent reviewing code against the standard.
 **Runtime capabilities:**
 - **Load constraints** — internalize the standard before reviewing
 - **Audit diffs** — read `git diff`, run mechanical checks, identify pattern violations and opportunities
-- **Review arbitrary code** — evaluate pasted snippets, files, or directories against the standard
+- **Review arbitrary code** — evaluate pasted snippets, files, or directories against the standard; on current adapters this public review surface may also host approved fix application
 - **Report findings** — structured output: file, line, pattern name, violation/opportunity, alternative
 
 **What the auditor does NOT do:**
@@ -166,7 +166,7 @@ An adapter teaches one agent platform how to use Web XP. Any agent that can read
 |------------|------|--------------|
 | Load constraints | both | Read `code-guidelines.md` and `code-philosophy.md`, apply as session constraints |
 | Audit diff | auditor | Read `git diff`, run `bin/pre-commit-check.sh`, report pattern violations and opportunities |
-| Review code | auditor | Evaluate arbitrary code (pasted, file path, directory) against the standard |
+| Review code | auditor | Evaluate arbitrary code (pasted, file path, directory) against the standard; may also host opt-in fix application on some adapters |
 | Apply fixes | coder | Edit source files to resolve violations, with human approval per change |
 
 **Setup skills (or equivalent):**
@@ -190,7 +190,7 @@ All adapters point at the same core files. They do not duplicate the standard �
 ### Existing adapters
 
 **Claude** (implemented — concrete packaging in `adapters/claude/`, packaged to `.claude/skills/`):
-Seven native skills covering all capabilities above. Project contract: `CLAUDE.md`, built from `adapters/shared-base/AGENT.md` + Claude overlay. Skill behavior is authored in `adapters/shared-base/skills/` and built into concrete Claude packaging under `adapters/claude/`. `.claude/skills/` is the platform-native runtime/package path for local Claude development and install packaging.
+Six native skills covering all capabilities above. Project contract: `CLAUDE.md`, built from `adapters/shared-base/AGENT.md` + Claude overlay. Skill behavior is authored in `adapters/shared-base/skills/` and built into concrete Claude packaging under `adapters/claude/`. `.claude/skills/` is the platform-native runtime/package path for local Claude development and install packaging.
 
 **Codex** (implemented — concrete packaging in `adapters/codex/`):
 Discovered skill folders plus a convention-based contract (`CODEX.md`). Contract is built from `adapters/shared-base/AGENT.md` + Codex overlay. Skill behavior is authored in `adapters/shared-base/skills/` and built into concrete Codex packaging under `adapters/codex/skills/`, then installed to `$HOME/.agents/skills/`.

@@ -109,8 +109,7 @@ Session skills are for evaluating Web XP or for one-off code checks. They load t
 |---|---|---|
 | `web-xp` | both | Load the governing rules into this session |
 | `web-xp-check` | auditor | Audit the current diff |
-| `web-xp-review` | auditor | Review any code against the standards |
-| `web-xp-apply` | coder | Walk through fixes one at a time with approval |
+| `web-xp-review` | auditor + coder | Review any code against the standards; apply fixes only on explicit request or approval |
 
 ## Project Overlay
 

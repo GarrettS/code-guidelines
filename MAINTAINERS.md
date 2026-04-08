@@ -130,7 +130,6 @@ web-xp/
 │   ├── claude/                 # Claude overlay, built contract, built skills, docs
 │   │   ├── web-xp/
 │   │   ├── web-xp-check/
-│   │   ├── web-xp-apply/
 │   │   ├── web-xp-review/
 │   │   ├── web-xp-on/
 │   │   └── web-xp-off/
@@ -138,7 +137,6 @@ web-xp/
 │       └── skills/             # Codex skills (installed to $HOME/.agents/skills/)
 │           ├── web-xp/
 │           ├── web-xp-check/
-│           ├── web-xp-apply/
 │           ├── web-xp-review/
 │           ├── web-xp-on/
 │           └── web-xp-off/
@@ -146,7 +144,6 @@ web-xp/
 │   └── skills/                 # generated Claude runtime/package path
 │       ├── web-xp/
 │       ├── web-xp-check/
-│       ├── web-xp-apply/
 │       ├── web-xp-review/
 │       ├── web-xp-on/
 │       └── web-xp-off/

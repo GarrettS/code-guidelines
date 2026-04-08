@@ -54,7 +54,7 @@ mkdir -p "$CASE_DIR/tools"
 cp "$SYNC_SCRIPT" "$CASE_DIR/tools/check-web-xp-sync.sh"
 cp "$BUILD_SCRIPT" "$CASE_DIR/tools/build-adapter-skills.sh"
 
-for skill_name in web-xp web-xp-check web-xp-review web-xp-apply web-xp-on web-xp-off; do
+for skill_name in web-xp web-xp-check web-xp-review web-xp-on web-xp-off; do
   write_file "adapters/shared-base/skills/${skill_name}.md" "# ${skill_name}
 
 ## Purpose

@@ -20,9 +20,9 @@ teardown() {
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-check"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-review"
-  assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-apply"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-on"
   assert_dir_exists "$TMP_HOME/.claude/skills/web-xp-off"
+  [ ! -e "$TMP_HOME/.claude/skills/web-xp-apply" ]
 }
 
 @test "replaces stale Web XP files on reinstall" {
@@ -61,9 +61,9 @@ teardown() {
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-check"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-review"
-  assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-apply"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-on"
   assert_dir_exists "$TMP_HOME/.agents/skills/web-xp-off"
+  [ ! -e "$TMP_HOME/.agents/skills/web-xp-apply" ]
 }
 
 @test "removes stale deprecated Codex setup skills on reinstall" {
@@ -74,6 +74,18 @@ teardown() {
   [ "$status" -eq 0 ]
 
   [ ! -e "$TMP_HOME/.agents/skills/web-xp-remove" ]
+}
+
+@test "removes stale deprecated apply skills on reinstall" {
+  mkdir -p "$TMP_HOME/.claude/skills/web-xp-apply" "$TMP_HOME/.agents/skills/web-xp-apply"
+  echo "stale" > "$TMP_HOME/.claude/skills/web-xp-apply/SKILL.md"
+  echo "stale" > "$TMP_HOME/.agents/skills/web-xp-apply/SKILL.md"
+
+  run env HOME="$TMP_HOME" WEB_XP_MANIFEST_PATH="$MANIFEST_PATH" bash "$INSTALL_SCRIPT"
+  [ "$status" -eq 0 ]
+
+  [ ! -e "$TMP_HOME/.claude/skills/web-xp-apply" ]
+  [ ! -e "$TMP_HOME/.agents/skills/web-xp-apply" ]
 }
 
 @test "writes a flat manifest of installed files" {

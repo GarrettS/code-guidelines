@@ -3,7 +3,7 @@ name: web-xp-review
 description: 'Activate when explicitly invoked by name. Auto-activate only if a Web XP project contract (`CODEX.md` or `CLAUDE.md`) exists in the project.'
 ---
 
-# Web XP Review — Evaluate Any Code Against the Standards
+# Web XP Review — Evaluate Code and Apply Approved Fixes
 
 <!-- DO NOT EDIT — built from /adapters/shared-base/skills/web-xp-review.md + Codex bindings. -->
 
@@ -11,13 +11,15 @@ description: 'Activate when explicitly invoked by name. Auto-activate only if a 
 
 - Read `~/.web-xp/code-guidelines.md`.
 - Read `~/.web-xp/code-philosophy.md`.
+- Make edits using Codex's normal file editing tools after explicit approval.
+- Run `bash ~/.web-xp/bin/pre-commit-check.sh` after approved edits.
 - Refer to related Codex capabilities without slash prefixes.
 
 ## Shared capability
 
 ## Purpose
 
-Review code the user provides against the Web XP standards. Unlike `web-xp-check`, this works on any code from any source.
+Review code the user provides against the Web XP standards. Unlike `web-xp-check`, this works on any code from any source. Review is the default posture. If the human explicitly asks for changes or approves proposed edits, this capability can also apply fixes.
 
 ## Activation
 
@@ -70,6 +72,32 @@ For each finding, report:
 
 For framework code, show the vanilla equivalent side by side.
 
-### 5. Offer next steps
+### 5. Apply fixes only on explicit request or approval
+
+Do not auto-apply fixes. Review first.
+
+If the human explicitly asks you to make changes, or approves proposed edits, then apply fixes using this flow:
+
+1. present one coherent change at a time by default
+2. group changes only when they are the same kind of edit in the same file or tightly related scope
+3. for each proposed change set, present:
+   - file and line number(s)
+   - pattern name and whether it is a violation or opportunity
+   - current code
+   - proposed replacement
+   - one-sentence Web XP rationale
+4. ask for approval before each change set unless the human already gave clear blanket approval to proceed
+5. after approval:
+   - make the edit
+   - verify it was applied correctly
+
+After all approved edits:
+
+- report how many findings were applied, skipped, and declined
+- remove selectors, IDs, classes, and variables made unreferenced by the refactor
+- run the adapter's Web XP pre-commit check command
+- review changed JS for correctness: no broken references, missing arguments, or changed behavior
+
+### 6. Offer next steps
 
 Suggest specific follow-up actions based on the actual findings. If the review found nothing, say so and skip this step.

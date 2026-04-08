@@ -118,12 +118,9 @@ build_claude_skill "web-xp-check" \
 build_claude_skill "web-xp-review" \
   "- Read \`\${CLAUDE_SKILL_DIR}/../code-guidelines.md\`.
 - Read \`\${CLAUDE_SKILL_DIR}/../code-philosophy.md\`.
+- Make edits using Claude's normal editing tools after explicit approval.
+- Run \`bin/pre-commit-check.sh\` if it exists in the project; otherwise run \`bash \${CLAUDE_SKILL_DIR}/../pre-commit-check.sh\` after approved edits.
 - Use Claude slash-command names when referencing related capabilities."
-
-build_claude_skill "web-xp-apply" \
-  "- If findings are missing, run \`/web-xp-check\` first.
-- Make edits using Claude's normal editing tools.
-- Run \`bin/pre-commit-check.sh\` if it exists in the project; otherwise run \`bash \${CLAUDE_SKILL_DIR}/../pre-commit-check.sh\` after approved edits."
 
 build_claude_skill "web-xp-on" \
   "- Project contract file: \`CLAUDE.md\`.
@@ -148,12 +145,9 @@ build_codex_skill "web-xp-check" \
 build_codex_skill "web-xp-review" \
   "- Read \`~/.web-xp/code-guidelines.md\`.
 - Read \`~/.web-xp/code-philosophy.md\`.
+- Make edits using Codex's normal file editing tools after explicit approval.
+- Run \`bash ~/.web-xp/bin/pre-commit-check.sh\` after approved edits.
 - Refer to related Codex capabilities without slash prefixes."
-
-build_codex_skill "web-xp-apply" \
-  "- If findings are missing, run \`web-xp-check\` first.
-- Make edits using Codex's normal file editing tools.
-- Run \`bash ~/.web-xp/bin/pre-commit-check.sh\` after approved edits."
 
 build_codex_skill "web-xp-on" \
   "- Project contract file: \`CODEX.md\`.

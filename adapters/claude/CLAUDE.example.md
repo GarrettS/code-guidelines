@@ -19,6 +19,6 @@ Apply the standard to the new code you write for the user's request. Do not refa
 
 ## Claude Code
 
-Use `/web-xp` to load the standards. Use `/web-xp-check` to audit the diff. Use `/web-xp-review` to review any code. Use `/web-xp-apply` to walk through fixes with approval.
+Use `/web-xp` to load the standards. Use `/web-xp-check` to audit the diff. Use `/web-xp-review` to review any code and, when explicitly asked or approved, apply fixes.
 
 <!-- END WEB-XP -->
