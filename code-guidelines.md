@@ -1,4 +1,4 @@
-# Code Guidelines
+# Code Guidelines 
 
 This is Web XP’s code doctrine for humans and agents, supported with interpretive context, examples, and rationale in `code-philosophy.md`.
 
@@ -13,6 +13,8 @@ These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/
 
 **No uncaught errors. No silent failure paths. Every failure must resolve to a defined safe outcome.**
 
+#### Core Distinctions
+
 **Silent Failure**
 - When the failure affects the user's task or understanding, that outcome must be **user-visible**: a message, a retry option, a fallback, or a graceful degradation.
 - When a feature is optional and the app functions without it, **intentional degradation** is acceptable — but it must be a deliberate design decision, not an accident. Comment the code stating what is degraded and why.
@@ -26,7 +28,7 @@ Common Violation Targets:
   - storage access
   - fire-and-forget async
   - unawaited promises — must have a failure path
-  - promise chains — must not define and test rejection 
+  - promise chains — must explicitly handle rejection, and this must be tested
 
 **User-initiated vs. background operations.** The visibility requirement applies to operations the user triggered or whose outcome the user expects. When the app performs a background enhancement — opportunistic state persistence, prefetching, analytics — the user did not ask for it and does not know it exists. If a background operation fails, alerting the user that something they never requested has broken is noise, not transparency. Silent degradation is the correct response: the feature that depends on the enhancement works without it, and the failure is invisible.
 
@@ -35,7 +37,11 @@ The distinction is intent:
 - *User-initiated* — the user clicked Save, submitted a form, requested data. Failure must be visible.
 - *Background enhancement* — the app opportunistically persists state, preloads data, or caches a result to improve a future interaction. Failure is silent. Comment the code stating what is degraded and why.
 
-Anchor example:
+**Two categories of failure must be addressed:**
+- *Runtime failures* — network errors, parse failures, storage quota exceeded, missing resources. Catch at the source. Do not let upstream failures cascade into downstream reference errors.
+- *User errors* — invalid input, out-of-range values, malformed data. Validate, give clear feedback, do not proceed with bad data.
+
+#### Anchor Example
 
 ```javascript
 function trySave(progress) {
@@ -50,23 +56,21 @@ function trySave(progress) {
 }
 ```
 
+#### What This Rules Out
+
 Failure modes:
 
 1. **Unhandled throw.** An error is thrown and not handled, propagating back up the call stack, causing undefined behavior, possibly throwing the error to the user (typically shown in web browser consoles), impacting behavior and performance along the way.
 2. **Silent return.** A function returns a sentinel value `null`, `undefined`, or an empty value after a failure. The caller receives a sentinel instead of data, must check for it, and if it does not, the app breaks downstream. The user sees nothing.
 3. **Console-only catch.** A `catch` block logs to the console and continues. The error is swallowed. The user sees nothing. The app proceeds on invalid state. Console statements are not allowed in production code.
 
-"Handling" means the error is caught and handled. For user-initated options, present a retry option, a fallback, or a graceful degradation.
+#### Empty Catch Policy
 
-Allowed exception shape:
+"Handling" means the error is caught and handled. For user-initiated options, present a retry option, a fallback, or a graceful degradation.
 
 **Comment the empty catch.** A comment in the body states that the suppression is deliberate and explains what degrades. Without the comment, the next developer adds error handling that alerts the user about a background operation failure they never needed to see. Use a specific name for the error parameter when the error type can be determined. An empty or suppressing `catch` block looks like a mistake — a reader or linter sees the unhandled exception, then sees the reason it was unhandled in the comment, giving it a pass.
 
-Reference examples:
-
-**Two categories of failure must be addressed:**
-- *Runtime failures* — network errors, parse failures, storage quota exceeded, missing resources. Catch at the source. Do not let upstream failures cascade into downstream reference errors.
-- *User errors* — invalid input, out-of-range values, malformed data. Validate, give clear feedback, do not proceed with bad data.
+#### Reference Examples
 
 Specific operations that require guarded handling:
 - `fetch()` — network errors and HTTP error status. Both paths need a user-visible response.
@@ -87,13 +91,17 @@ Specific operations that require guarded handling:
 - `localStorage` / `sessionStorage` — browsers throw in private mode or when quota is exceeded. Wrap access in `try/catch` with a user-visible response or silent degradation (feature works without persistence).
 - Fire-and-forget async — any `async` function called without `await` must have `.catch()` at the call site with a user-visible response.
 
-Related rules / related sections:
+#### Related Rules / Related Sections
 
 [[related rules / related sections]]
 
 ### Ubiquitous Language
 
-Variables, class names, CSS selectors, function names, DOM IDs, JSON keys, and documentation use the same terms the domain uses. If the user says "concept map," the code says `conceptMap` — not `cmap`, `graph`, or `diagram`. If the authoritative domain reference uses an abbreviation, the data may store it and the UI expands it at render time. Use domain abbreviations, not programmer shorthand.
+#### Governing Statement
+
+Use the app domain’s language across the user interface, identifiers, class names, selectors, filenames, methods, DOM IDs, JSON keys, PRD/spec language, tests, and related documentation. If the user says "concept map," the code says `conceptMap` — not `cmap`, `graph`, or `diagram`. If the authoritative domain reference uses an abbreviation, the data may store it and the UI expands it at render time. Use domain abbreviations, not programmer shorthand.
+
+#### Core Distinctions
 
 This principle unifies:
 - **Identifier naming** — materially accurate names from the domain
@@ -101,7 +109,15 @@ This principle unifies:
 - **Shared Key** — module-owned prefixes and IDs that name the domain concept
 - **Module Cohesion** — file names that describe the domain responsibility
 
+#### What This Rules Out
+
 Mismatch between domain language and code language is a defect. It inserts a translation layer into reading, debugging, and maintenance, increasing the chance that the developer's mental model drifts from the actual system. Features must be discoverable by searching for the same words the user, PRD, and authoritative domain reference use.
+
+#### Related Rules / Related Sections
+
+- **[Shared Key](#shared-key)** — use the same domain terms in data keys, DOM IDs, and lookups.
+- **[Module Cohesion](#module-cohesion)** — use domain terms in module names and file names.
+- **[Good Names](code-philosophy.md#good-names)** — interpretive guidance on material-accuracy naming and grepability.
 
 ### Module Cohesion
 
