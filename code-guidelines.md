@@ -24,13 +24,13 @@ These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/
 **Runtime Errors**
 Uncaught errors are not allowed. Caught errors must be proactively tested and handled.
 
-Common Violation Targets:
-  - `fetch()`
-  - `JSON.parse()`
-  - storage access
-  - fire-and-forget async
-  - unawaited promises — must have a failure path
-  - promise chains — must explicitly handle rejection, and this must be tested
+Common violation targets:
+- `fetch()`
+- `JSON.parse()`
+- storage access
+- fire-and-forget async
+- unawaited promises — must have a failure path
+- promise chains — must explicitly handle rejection, and this must be tested
 
 **User-initiated vs. background operations.** The visibility requirement applies to operations the user triggered or whose outcome the user expects. When the app performs a background enhancement — opportunistic state persistence, prefetching, analytics — the user did not ask for it and does not know it exists. If a background operation fails, alerting the user that something they never requested has broken is noise, not transparency. Silent degradation is the correct response: the feature that depends on the enhancement works without it, and the failure is invisible.
 
@@ -43,6 +43,8 @@ The distinction is intent:
 - *Runtime failures* — network errors, parse failures, storage quota exceeded, missing resources. Catch at the source. Do not let upstream failures cascade into downstream reference errors.
 - *User errors* — invalid input, out-of-range values, malformed data. Validate, give clear feedback, do not proceed with bad data.
 
+**Messages are shared vocabulary.** Use plain, specific language in error messages. Do not just say that something failed; specify what failed. Distinguish failure cases in ubiquitous language so users understand what happened and reported errors are easier for us to assess and fix.
+
 #### Example
 
 ```javascript
@@ -50,7 +52,7 @@ function trySave(progress) {
   try {
     localStorage.setItem(STORAGE_KEY,
       JSON.stringify(progress));
-  } catch (e) {
+  } catch (storageError) {
     // Background save — not user-initiated, no alert.
     // Quiz functions without persistence; user loses
     // streak data only.
@@ -74,21 +76,51 @@ Failure modes:
 
 #### Reference Examples
 
+Use [Ubiquitous Language](#ubiquitous-language) in user-visible error messages.
+
 Specific operations that require guarded handling:
 - `fetch()` — network errors and HTTP error status. Both paths need a user-visible response.
-  ```javascript
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      showError('Could not load quiz data. Check your connection.');
-      return;
+
+```javascript
+function fetchReason(cause) {
+  const errorName = cause?.name;
+
+  if (errorName) {
+    if (errorName === 'SyntaxError') {
+      return "response wasn't valid JSON";
+    } else if (errorName === 'TypeError') {
+      return 'network request failed';
     }
-    const data = await response.json();
-    renderQuiz(data);
-  } catch (err) {
-    showError('Could not load quiz data. Check your connection.');
+    return 'unexpected error: ' + errorName;
   }
-  ```
+
+  if (typeof cause?.status === 'number') {
+    return 'server returned ' + cause.status;
+  }
+  return 'unexpected error';
+}
+
+try {
+  const response = await fetch('masterquiz.json');
+  if (!response.ok) {
+    showError('Could not load masterquiz.json: ' +
+      fetchReason(response) + '.');
+    return;
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (parseError) {
+    showError('Could not load masterquiz.json: ' +
+      fetchReason(parseError) + '.');
+    return;
+  }
+  renderQuiz(data);
+} catch (err) {
+  showError('Could not load masterquiz.json: ' +
+    fetchReason(err) + '.');
+}
+```
 - `JSON.parse()` — malformed data must not crash the app. Wrap in `try/catch` with a user-visible response on failure.
 - `localStorage` / `sessionStorage` — browsers throw in private mode or when quota is exceeded. Wrap access in `try/catch` with a user-visible response or silent degradation (feature works without persistence).
 - Fire-and-forget async — any `async` function called without `await` must have `.catch()` at the call site with a user-visible response.
