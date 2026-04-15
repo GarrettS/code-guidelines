@@ -1,8 +1,8 @@
 # Code Guidelines 
 
-This is Web XP’s code doctrine for humans and agents, supported with interpretive context, examples, and rationale in `code-philosophy.md`.
+This is Web XP’s code doctrine for humans and agents, supported by interpretive context, examples, and rationale in `code-philosophy.md`.
 
-These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/jsguide.html) and [HTML/CSS](https://google.github.io/styleguide/htmlcssguide.html) style guides, and comp.lang.javascript
+These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/jsguide.html) and [HTML/CSS](https://google.github.io/styleguide/htmlcssguide.html) style guides, comp.lang.javascript
 [Code Guidelines](https://web.archive.org/web/20240805191807/http://jibbering.com/faq/notes/code-guidelines/).
 
 ---
@@ -11,47 +11,25 @@ These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/
 
 ### Fail-Safe
 
-#### Governing Statement
-
 **No uncaught errors. No silent failure paths. Every failure must resolve to a defined safe outcome.**
 
 #### Core Distinctions
 
-**Silent Failure**
-- When the failure affects the user's task or understanding, that outcome must be **user-visible**: a message, a retry option, a fallback, or a graceful degradation.
-- When a feature is optional and the app functions without it, **intentional degradation** is acceptable — but it must be a deliberate design decision, not an accident. Comment the code stating what is degraded and why.
-
-**Runtime Errors**
-Uncaught errors are not allowed. Caught errors must be proactively tested and handled.
-
-Common violation targets:
-- `fetch()`
-- `JSON.parse()`
-- storage access
-- fire-and-forget async
-- unawaited promises — must have a failure path
-- promise chains — must explicitly handle rejection, and this must be tested
-
-**User-initiated vs. background operations.** The visibility requirement applies to operations the user triggered or whose outcome the user expects. When the app performs a background enhancement — opportunistic state persistence, prefetching, analytics — the user did not ask for it and does not know it exists. If a background operation fails, alerting the user that something they never requested has broken is noise, not transparency. Silent degradation is the correct response: the feature that depends on the enhancement works without it, and the failure is invisible.
-
-The distinction is intent:
-
 - *User-initiated* — the user clicked Save, submitted a form, requested data. Failure must be visible.
-- *Background enhancement* — the app opportunistically persists state, preloads data, or caches a result to improve a future interaction. Failure is silent. Comment the code stating what is degraded and why.
+- *Background enhancement* — UX improvement not required for user's current task. Don't alert user with background failure noise; explain the silent failure in a code-comment. Examples: eager state persistence or data preloads to enhance future interaction. This is often preferable to polyfills, which add code that soon becomes obsolete.
 
 **Two categories of failure must be addressed:**
 - *Runtime failures* — network errors, parse failures, storage quota exceeded, missing resources. Catch at the source. Do not let upstream failures cascade into downstream reference errors.
 - *User errors* — invalid input, out-of-range values, malformed data. Validate, give clear feedback, do not proceed with bad data.
 
-**Messages are shared vocabulary.** Use plain, specific language in error messages. Do not just say that something failed; specify what failed. Distinguish failure cases in ubiquitous language so users understand what happened and reported errors are easier for us to assess and fix.
+**Messages are shared vocabulary.** Use plain, specific language in error messages. Distinguish failure cases in [Ubiquitous Language](#ubiquitous-language) so users understand what happened and reported errors are easier for the team to assess and fix.
 
-#### Example
+#### Examples
 
 ```javascript
 function trySave(progress) {
   try {
-    localStorage.setItem(STORAGE_KEY,
-      JSON.stringify(progress));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   } catch (storageError) {
     // Background save — not user-initiated, no alert.
     // Quiz functions without persistence; user loses
@@ -60,25 +38,21 @@ function trySave(progress) {
 }
 ```
 
-#### What This Rules Out
-
-Failure modes:
-
-1. **Unhandled throw.** An error is thrown and not handled, propagating back up the call stack, causing undefined behavior, possibly throwing the error to the user (typically shown in web browser consoles), impacting behavior and performance along the way.
-2. **Silent return.** A function returns a sentinel value `null`, `undefined`, or an empty value after a failure. The caller receives a sentinel instead of data, must check for it, and if it does not, the app breaks downstream. The user sees nothing.
-3. **Console-only catch.** A `catch` block logs to the console and continues. The error is swallowed. The user sees nothing. The app proceeds on invalid state. Console statements are not allowed in production code.
+#### Violations
+- Uncaught runtime errors.
+- Caught errors with no defined safe outcome.
 
 #### Empty Catch Policy
+Handling means a defined safe outcome.
 
-"Handling" means the error is caught and handled. For user-initiated options, present a retry option, a fallback, or a graceful degradation.
+Comment empty `catch` blocks to explain what degrades and why. Otherwise they look accidental.
 
-**Comment the empty catch.** A comment in the body states that the suppression is deliberate and explains what degrades. Without the comment, the next developer adds error handling that alerts the user about a background operation failure they never needed to see. Use a specific name for the error parameter when the error type can be determined. An empty or suppressing `catch` block looks like a mistake — a reader or linter sees the unhandled exception, then sees the reason it was unhandled in the comment, giving it a pass.
+#### Error-Specific Handling
+Use specific error handling for each determinable error type.
 
 #### Reference Examples
 
-Use [Ubiquitous Language](#ubiquitous-language) in user-visible error messages.
-
-Specific operations that require guarded handling:
+Common failure points:
 - `fetch()` — network errors and HTTP error status. Both paths need a user-visible response.
 
 ```javascript
@@ -121,9 +95,9 @@ try {
     fetchReason(err) + '.');
 }
 ```
-- `JSON.parse()` — malformed data must not crash the app. Wrap in `try/catch` with a user-visible response on failure.
-- `localStorage` / `sessionStorage` — browsers throw in private mode or when quota is exceeded. Wrap access in `try/catch` with a user-visible response or silent degradation (feature works without persistence).
-- Fire-and-forget async — any `async` function called without `await` must have `.catch()` at the call site with a user-visible response.
+- `JSON.parse()` — malformed data throws.
+- `localStorage` / `sessionStorage` — browsers throw in private mode or when quota is exceeded.
+- Calling async functions without await leaves errors uncaught and unhandled, and can create race conditions.
 
 #### Related Rules / Related Sections
 
