@@ -92,7 +92,7 @@ try {
 }
 ```
 
-**Code smell:** one `catch` covering operations with different safe outcomes. A code smell is a review candidate; confirm against context before fixing.
+**Code smell:** one `catch` covering operations with different safe outcomes.
 
 **Missing HTTP error differentiation**
 
@@ -106,7 +106,7 @@ try {
   showError("Network error — could not reach server.");
   return;
 }
-renderResponse(response);
+showMessage("Loaded.");
 ```
 
 **Right**:
