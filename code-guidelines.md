@@ -26,7 +26,7 @@ These rules draw on Google’s [JavaScript](https://google.github.io/styleguide/
 **Messages are shared vocabulary.** Use plain, specific, [ubiquitous](#ubiquitous-language) language in error messages. Distinguish failure cases so users understand what happened, and so the team can assess and fix reported errors.
 
 - **User outcome** — what went wrong, in the app's language. Must be shown.
-- **Diagnostic label** — short precise error name, for accurate troubleshooting. For caught errors, use the operation name plus the error object's `name`, such as `JSON.parse: ` + `parseError.name`. May be shown after the user outcome.
+- **Diagnostic label** — short precise error name, for accurate troubleshooting. For caught errors, use the failed operation plus the error object's `name`, such as `JSON.parse: ` + `parseError.name`. May be shown after the user outcome.
 - **Raw detail** — raw `error.message`, stack trace, engine text, object dumps, URLs, storage keys, request bodies, or private data. Must not be shown by default.
 
 Do not add error-handling abstraction the handler does not need.
@@ -45,7 +45,7 @@ For reference: [`Error.prototype.name`](https://developer.mozilla.org/en-US/docs
 
 #### Violations
 
-**Undifferentiated error handling**
+**Uncaught runtime failure**
 
 **Wrong** (no error path):
 
@@ -53,8 +53,10 @@ For reference: [`Error.prototype.name`](https://developer.mozilla.org/en-US/docs
 localStorage.setItem(key, JSON.stringify(data));
 ```
 
-- No message: user doesn't know the operation failed.
-- Distinct failure modes (`JSON.stringify`, `setItem`) unhandled.
+- Error propagates and breaks control flow.
+- App may continue from a broken state or stop before defining a safe outcome.
+
+**Undifferentiated error handling**
 
 **Wrong** (catch-all):
 
