@@ -4,7 +4,7 @@ Reusable prompt for cleaning meta-mode leakage out of existing issue text. Apply
 
 ## Authority
 
-`editorial-rules.md` is the canonical source for meta-mode-leakage patterns. The pattern list below is a working copy of that section. Source-of-truth conflicts resolve by `editorial-rules.md`.
+`editorial-rules.md` (landing per #65) is the canonical source for meta-mode-leakage patterns. Until that file exists, the pattern list below is the working reference, mirrored as a snapshot at https://github.com/GarrettS/web-xp/issues/65#issuecomment-4364862207.
 
 Build-script composition deferred — duplication is acceptable for one extraction.
 

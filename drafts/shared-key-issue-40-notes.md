@@ -1,7 +1,7 @@
 # Notes: Web XP #40 Shared Key Doctrine
 
 Working notes for Web XP issue #40. These are not the Shared Key Pattern entry.
-The entry draft lives in `internal/shared-key-entry-draft.md`.
+The entry draft lives in `drafts/shared-key-draft.md`.
 
 ## Drafting Approach
 

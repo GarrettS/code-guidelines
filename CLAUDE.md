@@ -8,6 +8,8 @@ If the task involves JS, HTML, or CSS, run `/web-xp` before writing or reviewing
 
 ## Issue engagement
 
+When asked about an issue, first determine what's being asked: explanation of the issue text, planning advice (triage, scoping, sequencing), or implementation. Ask if unclear. The protocol below applies to implementation requests; explanation and planning requests stop at the answer.
+
 Before working on an issue:
 
 1. Verify the issue is open and not assigned to anyone else. Skip if closed. If assigned to someone else, surface the conflict; do not self-assign over them.
@@ -23,6 +25,8 @@ Keep the assignment sticky through the duration of the work — across turns, pa
 
 On completion (work landed and committed), close the issue and delete temporary draft files tied to the work (issue drafts, body-edits, etc.). No dead code.
 
+**Duplicate avoidance.** Before filing an issue or posting a comment, search the tracker for existing duplicates. Issues, comments, files — same rule: search before adding. If a duplicate is found, reference the existing artifact rather than creating another.
+
 ## Standards files
 
 Canonical skill sources live in `adapters/shared-base/skills/`. Generated adapter packaging lives in `adapters/claude/` and `adapters/codex/skills/`. Always edit the shared source, never generated adapter output.
@@ -31,9 +35,15 @@ Canonical skill sources live in `adapters/shared-base/skills/`. Generated adapte
 
 ## Before every commit
 
-1. Run `bash tools/check-web-xp-sync.sh` — rebuilds generated adapter skills from shared sources.
-2. Run `/web-xp-check` — audit the diff against Web XP patterns.
-3. Run `bash bin/pre-commit-check.sh` — catches mechanical code-guideline violations.
+Most commits (markdown, docs, contracts, MAINTAINERS.md): review the diff against Patterns and Fail-Safe in `code-guidelines.md`. No automated check applies.
+
+Conditional checks:
+
+- When changing `adapters/shared-base/`: run `bash tools/check-web-xp-sync.sh` to rebuild generated adapter outputs.
+- When changing doctrine (`code-guidelines.md`, `code-philosophy.md`): run `/web-xp-check` for a doctrine audit.
+- When changing scripts in `bin/` or `tools/`: run `bash test/run-unit.sh`.
+
+Note: `bin/pre-commit-check.sh` is the user-facing script distributed to user projects via `bin/web-xp-on`. Do not run it on this repo.
 
 ## Agent Handoff
 
